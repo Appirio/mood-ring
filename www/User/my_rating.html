@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <!-- Meta Tags -->
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="format-detection" content="telephone=no">
+  <title>my rating</title>
+  
+  <!-- home screen app iPhone icon -->
+  <link rel="apple-touch-icon-precomposed" sizes="57x57" href="../i/app-icon-57.png" />
+  <!-- home screen app iPhone Retinas icon -->
+  <link rel="apple-touch-icon-precomposed" sizes="114x114" href="../i/app-icon-114@2x.png" />
+  <!-- home screen app iPhone Retinas 3x icon -->
+  <link rel="apple-touch-icon-precomposed" sizes="180x180" href="../i/app-icon-180@3x.png" />
+
+  <!-- Bootstrap -->
+  <link href="../lib/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="../lib/bootstrap/css/bootstrap-theme.min.css" rel="stylesheet">
+  <!-- Main CSS -->
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,600' rel='stylesheet' type='text/css'>
+  <link href="../css/jqtransform.css" rel="stylesheet" />
+  <link href="../css/screen.css" rel="stylesheet" />
+  
+  <!-- Cordova library -->
+  <script src="../cordova.js"></script>
+    
+  <!-- jQuery library -->
+  <script src="../js/jquery-2.1.4.min.js"></script>
+  <script src="../js/hammer.min.js"></script>
+  <script src="../js/jquery.hammer.js"></script>
+  <script src="../js/ichart.1.2.min.js"></script>
+  <script src="../js/jquery.jqtransform.js"></script>
+  <script src="../lib/bootstrap/js/bootstrap.min.js"></script>
+  <!-- Main JS -->
+  <script src="../js/chart.js"></script>
+  <script src="../js/script.js"></script>
+</head>
+<body>
+  <header class="header">
+    <a href="javascript:;" class="button button-menu-toggle">toggle</a>
+    <h1>MY RATING</h1>
+    <a href="javascript:;" class="button button-search">search</a>
+  </header>
+  <!-- end header -->
+  
+  <div class="search-bar hide">
+    <span class="right-btn">
+      <a href="javascript:;" class="blue-link cancel-search-btn">Cancel</a>
+    </span>
+    <span class="input-box">
+      <span class="spacing">
+        <a href="javascript:;" class="icon-voice icons"></a>
+        <input type="text" class="top-search-input" placeholder="Search">
+      </span>
+    </span>
+  </div>
+  <!-- end .search-bar -->
+  
+  <div class="search-tip">
+    <div class="row consultant_result">
+      <h3>CONSULTANT (<span class="consultant_number_text"></span>)</h3>
+      <ul>
+        <li class="hide"><a href="javascript:;"></a></li>
+      </ul>
+    </div>
+    <!-- end .row -->
+    <div class="row project_manager_result">
+      <h3>PROJECT MANAGER (<span class="project_manager_number_text"></span>)</h3>
+      <ul>
+        <li class="hide"><a href="javascript:;"></a></li>
+      </ul>
+    </div>
+    <!-- end .row -->
+    <div class="row projects_result">
+      <h3>PROJECTS (<span class="projects_number_text"></span>)</h3>
+      <ul>
+        <li class="hide"><a href="javascript:;"></a></li>
+      </ul>
+    </div>
+    <!-- end .row -->
+  </div>
+  <!-- end .search-tip -->
+  
+  <aside>
+    <header>
+      <div class="logo">
+        <img src="../i/logo.png" alt="APPIRIO"><span>MOOD RING</span>
+      </div>
+    </header>
+    <!-- end aside header -->
+    <div class="aside-nav">
+      <nav>
+        <ul class="side-menus">
+          <li>
+            <a href="dashboard.html" class="dashboard">
+              <i class="icons"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="my_rating.html" class="my-rating active">
+              <i class="icons"></i>
+              <span>My Rating</span>
+            </a>
+          </li>
+          <li>
+            <a href="my_satisfaction.html" class="my-satisfaction">
+              <i class="icons"></i>
+              <span>My Fun Factor</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+      <!-- end aside nav -->
+      <div class="aside-bottom">
+        <a href="javascript:;" class="setting">setting</a>
+        <a href="javascript:;" class="question">question</a>
+        <a href="javascript:;" class="quit">quit</a>
+      </div>
+      <!-- end .aside-bottom -->
+    </div>
+  </aside>
+  <!-- end aside -->
+  
+  <main class="main-content rate-content">
+    <div class="summary"> 
+      <div class="info">
+        <a href="javascript:;" class="headpic"><img src="../i/history-img112x112-5.jpg" alt="Jackblack Longnamous"></a>
+        <h4 class="name">JOHN DOE</h4>
+        <p>AVG ON ALL PROJECTS</p>
+        <a href="javascript:;" class="count">4.25</a>        
+      </div>
+      <div class="line-chart">
+        <div class="content" id="canvasLineChart" data-file="myRatingLineChart.json">
+        </div>
+      </div>
+    </div>
+    <!-- end .summary -->
+    <div class="tabs">
+      <div class="tab">
+        <a href="javascript:;" class="active">Active</a>
+      </div>
+      <div class="tab">
+        <a href="javascript:;">Past</a>
+      </div>
+      <div class="tab">
+        <a href="javascript:;">All</a>
+      </div>
+    </div>
+    <!-- end .tabs -->
+    <div class="projects-list tab-content">
+      <a href="javascript:;" class="item-row">
+        <div class="project health">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>HEALTHCARE PROJECT ABC</h3>
+            <div class="count">5</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+      <a href="javascript:;" class="item-row">
+        <div class="project lorem">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>LOREM TECHNOLOGY PROJECT</h3>
+            <div class="count">4</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+	  <a href="javascript:;" class="item-row">
+        <div class="project acme">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>ACME FINANCIAL PROJECT</h3>
+            <div class="count">4.5</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+    </div>
+    <!-- end .projects-list -->
+    <div class="projects-list tab-content hide">
+      <a href="javascript:;" class="item-row">
+        <div class="project health">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>HEALTHCARE PROJECT ABC2</h3>
+            <div class="count">5</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+      <a href="javascript:;" class="item-row">
+        <div class="project lorem">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>LOREM TECHNOLOGY PROJECT</h3>
+            <div class="count">4</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+      <a href="javascript:;" class="item-row">
+        <div class="project acme">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>ACME FINANCIAL PROJECT</h3>
+            <div class="count">4.5</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+    </div>
+   <!-- end .projects-list -->
+    <div class="projects-list tab-content hide">
+      <a href="javascript:;" class="item-row">
+        <div class="project health">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>HEALTHCARE PROJECT ABC3</h3>
+            <div class="count">5</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+      <a href="javascript:;" class="item-row">
+        <div class="project lorem">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>LOREM TECHNOLOGY PROJECT</h3>
+            <div class="count">4</div>
+          </div>
+        </div>
+      </a>
+      <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+      <a href="javascript:;" class="item-row">
+        <div class="project acme">
+          <div class="flag">
+            <span><i class="icons"></i></span>
+          </div>
+          <div class="intro">
+            <h3>ACME FINANCIAL PROJECT</h3>
+            <div class="count">4.5</div>
+          </div>
+        </div>
+      </a>
+	  <div class="view-bar hide">
+        <div class="view"><a href="user_rating_history.html">View Rating History</a></div>
+        <div class="view"><a href="project_details.html">View Project Details</a></div>
+      </div>
+    </div>
+    <!-- end .projects-list -->
+  </main>
+  <!-- end .main-content -->
+  
+  <div class="modal-bg hide"></div>
+  <!-- end .modal-bg -->
+</body>
+</html>

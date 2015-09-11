@@ -1,0 +1,7 @@
+﻿1.Member Details
+- Bar chart do not provided, it is only UI Dom.
+The bar chart is configurable and can match the storyboard,it is not only UI Dom.
+And I have add the animation when load the Bar Chart.
+So please leave it to Approve.
+
+2.Please check forum confirms about FinalFix and Approval Feedback.

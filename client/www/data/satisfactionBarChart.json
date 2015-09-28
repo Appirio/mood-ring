@@ -1,0 +1,9 @@
+[
+	{
+	  "itemBarChartFlow1": [100,55,15,100,15,100],
+		"itemBarChartFlow2": [55,55,45,100,75,55],
+		"itemBarChartFlow3": [35,75,35,75,35,35],
+		"itemBarChartFlow4": [75,75,100,75,100,75],
+		"itemBarChartFlow5": [100,100,75,100,75,100]
+	}
+]

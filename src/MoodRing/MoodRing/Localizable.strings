@@ -1,0 +1,23 @@
+/* 
+  Localizable.strings
+  MoodRing
+
+  Created by TCASSEMBLER on 09.10.15.
+  Copyright © 2015 Topcoder. All rights reserved.
+*/
+
+"AVG_RATING"="AVG RATING";
+"MY_AVG"="MY AVG";
+"OK"="OK";
+"Submit"="Submit";
+"Cancel"="Cancel";
+"Error"="Error";
+"Please select fun factor"="Please select fun factor";
+"Fun factor required"="Fun factor required";
+"Dashboard"="Dashboard";
+"My Rating"="My Rating";
+"My Fun Factor"="My Fun Factor";
+"AVG_RATING_THIS_PROJECT"="AVG ON THIS PROJECT";
+"TODAY"="Today";
+"YESTERDAY"="Yesterday";
+"RATE_PREFIX"="Rate";

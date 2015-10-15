@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>isManagerFlag</key>
+	<false/>
+	<key>salesforceKey</key>
+	<string>3MVG9Rd3qC6oMalVbp2nTI6GofvtEFpnifvUI5VtCjj52CYkbirpRvRUvMav.IE5xZMM2sbnnpARkCdsw9NEu</string>
+	<key>salesforceCallback</key>
+	<string>sfdc://success</string>
+</dict>
+</plist>

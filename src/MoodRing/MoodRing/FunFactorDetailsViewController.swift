@@ -74,7 +74,7 @@ class FunFactorDetailsViewController: UIViewController {
     - parameter sender: the button
     */
     @IBAction func closePopupAction(sender: AnyObject) {
-        self.fadingView.alpha = 0
+        self.fadingView.backgroundColor = UIColor(white: 0, alpha: 0)
         self.dismissViewControllerToSide(self, side: .BOTTOM, nil)
     }
 }

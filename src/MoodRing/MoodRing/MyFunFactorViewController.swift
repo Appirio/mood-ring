@@ -2,7 +2,7 @@
 //  MyFunFactorViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -25,7 +25,7 @@ let SAMPLE_FUN_FACTOR_ITEMS = [
 /**
 * My Fun Factor screen
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MyFunFactorViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -146,7 +146,7 @@ class MyFunFactorViewController: UIViewController, UITableViewDataSource, UITabl
 /**
 * Cell for a list in My Fun Factor screen
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MyFunFactorTableViewCell: ZeroMarginsCell {

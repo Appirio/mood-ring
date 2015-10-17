@@ -2,7 +2,7 @@
 //  HelpfulFunctions.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -14,7 +14,7 @@ A set of helpful functions and extensions
 /**
 * Extends UIColor with color methods from design.
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIColor {
@@ -130,7 +130,7 @@ extension UIColor {
 /**
 * Extenstion adds helpful methods to String
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension String {
@@ -302,7 +302,7 @@ func async(callback: ()->()) {
 /**
 * Extenstion adds helpful methods to Float
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension Float {
@@ -373,7 +373,7 @@ extension Float {
 /**
 * Helpfull methods
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension NSDate {
@@ -511,7 +511,7 @@ func isPortraitOrientation() -> Bool {
 /**
 * Extenstion adds helpful methods to Int
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension Int {

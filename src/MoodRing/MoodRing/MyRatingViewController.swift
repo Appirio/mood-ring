@@ -2,7 +2,7 @@
 //  MyRatingViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -21,7 +21,7 @@ let SAMPLE_PROJECTS_MY_RATING = [
 /**
 * My Rating screen
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MyRatingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -244,7 +244,7 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
 /**
 * Cell for the My Rating project list
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MyRatingTableViewCell: ZeroMarginsCell {

@@ -2,7 +2,7 @@
 //  UserRatingInProjectViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -20,7 +20,7 @@ let SAMPLE_USER_RATING_USERS = [
 * User Rating in Project screen (opened from "My Rating" screen).
 * Reuses code in MemberDetailsViewController
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class UserRatingInProjectViewController: MemberDetailsViewController {

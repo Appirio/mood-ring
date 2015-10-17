@@ -2,7 +2,7 @@
 //  ProjectDetailsViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 09.10.15.
+//  Created by Alexander Volkov on 09.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -15,7 +15,7 @@ let SAMPLE_FUN_FACTOR_COMMENT = "Everything goes as we planned"
 /**
 * Project Details screen
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
@@ -275,7 +275,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
 /**
 * Cell for a user on Project Details screen
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class ProjectDetailsCollectionViewCell: UICollectionViewCell {

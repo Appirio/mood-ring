@@ -2,7 +2,7 @@
 //  RootViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 /**
 * Root view controller
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class RootViewController: ContentViewController {
@@ -74,7 +74,7 @@ class RootViewController: ContentViewController {
 /**
 * Helpful view controller to change the status bar color
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class ContentViewController: UIViewController {

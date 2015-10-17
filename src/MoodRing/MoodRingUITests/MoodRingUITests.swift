@@ -2,7 +2,7 @@
 //  MoodRingUITests.swift
 //  MoodRingUITests
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 

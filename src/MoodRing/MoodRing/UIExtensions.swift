@@ -2,7 +2,7 @@
 //  UIExtensions.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ A set of helpful extensions for classes from UIKit
 * Methods for loading and removing a view controller and its views,
 * and shortcut helpful methods for instantiating UIViewController
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -191,7 +191,7 @@ enum TRANSITION {
 /**
 * Methods for custom transitions from the sides
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -280,7 +280,7 @@ extension UIViewController {
 /**
 * Helpful class to set preferred status bar
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class NavigationController: UINavigationController {
@@ -301,7 +301,7 @@ let FONT_PREFIX = "SourceSansPro"
 /**
 * Common fonts used in the app
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 struct Fonts {
@@ -318,7 +318,7 @@ struct Fonts {
 /**
 * Applies default family fonts for UILabels from IB.
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UILabel {
@@ -376,7 +376,7 @@ extension UILabel {
 /**
 * Shortcut methods for UIView
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIView {
@@ -441,7 +441,7 @@ extension UIViewController {
 /**
 * Extends UIView with shortcut methods
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIView {
@@ -551,7 +551,7 @@ extension UIView {
 /**
 * Shortcut methods for UITableView
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UITableView {
@@ -601,7 +601,7 @@ extension UITableView {
 /**
 * Separator inset fix
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class ZeroMarginsCell: UITableViewCell {
@@ -621,7 +621,7 @@ var CachedImages = [String: (UIImage?, [ImageCallback])]()
 /**
 * Extends UIImage with a shortcut method.
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIImage {
@@ -703,7 +703,7 @@ extension UIImage {
 /**
 * Extension adds methods that change navigation bar
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -845,7 +845,7 @@ let LOADING_EMULATION_DURATION: NSTimeInterval = 0.5
 /**
 * Class for a general loading view (for api calls).
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class LoadingView: UIView {
@@ -946,7 +946,7 @@ class LoadingView: UIView {
 /**
 * Helpful extensions related to this app
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {

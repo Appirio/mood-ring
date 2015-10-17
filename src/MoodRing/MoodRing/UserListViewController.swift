@@ -2,7 +2,7 @@
 //  UserListViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 /**
 * User list for Member Details and other screens
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class UserListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -80,7 +80,7 @@ class UserListViewController: UIViewController, UITableViewDataSource, UITableVi
 /**
 * Cell for the user list
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class UserListTableViewCell: ZeroMarginsCell {

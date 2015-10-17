@@ -2,7 +2,7 @@
 //  DashboardViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -27,7 +27,7 @@ let SAMPLE_DASHBOARD_PROJECTS = [
 /**
 * Dashboard screen
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -233,7 +233,7 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
 /**
 * Cell for the dashboard project list
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class DashboardTableViewCell: ZeroMarginsCell {
@@ -286,7 +286,7 @@ class DashboardTableViewCell: ZeroMarginsCell {
 /**
 * Helpfull classs to store border and shadow view reference
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class SmileyImageView: UIImageView {
@@ -301,7 +301,7 @@ class SmileyImageView: UIImageView {
 /**
 * Helpful methods related to the design
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIImageView {

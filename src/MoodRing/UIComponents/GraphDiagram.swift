@@ -2,7 +2,7 @@
 //  GraphDiagram.swift
 //  UIComponents
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright (c) 2015 TopCoder. All rights reserved.
 //
 
@@ -17,7 +17,7 @@ let DIAGRAM_ANIMATION_INTERVAL: NSTimeInterval = 0.010
 /**
 * Graph diagram (polyline)
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 @IBDesignable

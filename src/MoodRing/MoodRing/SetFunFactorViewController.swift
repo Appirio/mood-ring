@@ -2,7 +2,7 @@
 //  SetFunFactorViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 09.10.15.
+//  Created by Alexander Volkov on 09.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 /**
 * Popuo screen to set Fun Factro
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class SetFunFactorViewController: UIViewController, UITextViewDelegate {

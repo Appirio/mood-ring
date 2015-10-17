@@ -2,7 +2,7 @@
 //  UserDetailsViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ import UIComponents
 /**
 * User details for Member Details and other screens
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class UserDetailsViewController: UIViewController {

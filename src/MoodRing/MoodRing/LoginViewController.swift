@@ -2,7 +2,7 @@
 //  LoginViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -16,7 +16,7 @@ var LoginViewControllerInstance: LoginViewController?
 * Shows only one button "Sign in using SalesForce" because SalesForce SDK does
 * not allow a custom screens for authentication.
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class LoginViewController: UIViewController, SFAuthenticationManagerDelegate {

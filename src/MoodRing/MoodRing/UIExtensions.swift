@@ -818,9 +818,6 @@ extension UIViewController {
     }
     
     /**
-    Initialize back button for current view controller
-    */
-    /**
     Add right button with given icon
     
     - parameter iconName: the name of the icon

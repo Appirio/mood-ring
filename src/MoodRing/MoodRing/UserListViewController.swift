@@ -3,16 +3,25 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 
+/// type alias for item in UserListViewController
+typealias UserListItem = (user: User, funFactorItem: FunFactorItem, rating: Float, comment: String)
+
 /**
 * User list for Member Details and other screens
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - UserListItem typealias support
+* - noDataLabel added
 */
 class UserListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -20,9 +29,10 @@ class UserListViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var headerView: UIView!
     @IBOutlet weak var headerViewHeight: NSLayoutConstraint!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var noDataLabel: UILabel!
     
-    /// the users and comments to show
-    var items = [(User, String)]()
+    /// the users, comments and other data to show
+    var items = [UserListItem]()
     
     /// UI option: true - show the header on top ("Rate By"), false - else
     var showHeader = true
@@ -45,6 +55,9 @@ class UserListViewController: UIViewController, UITableViewDataSource, UITableVi
         if !showHeader {
             headerViewHeight.constant = 2.5 // keep gray line
         }
+        
+        noDataLabel.hidden = !items.isEmpty
+        noDataLabel.text = "NO_DATA".localized()
     }
     
     // MARK: UITableViewDataSource, UITableViewDelegate
@@ -72,8 +85,29 @@ class UserListViewController: UIViewController, UITableViewDataSource, UITableVi
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.getCell(indexPath, ofClass: UserListTableViewCell.self)
         let item = items[indexPath.row]
-        cell.configure(item.0, comment: item.1, showSmile: showSmiley, showRating: showRating)
+        cell.configure(item, showSmile: showSmiley, showRating: showRating)
         return cell
+    }
+    
+    // MARK: Helpful methods
+    
+    /**
+    Convert a list of Rating objects to list of UserListItem
+    
+    - parameter ratingHistory: the rating history list
+    
+    - returns: the list ready to be shown in UserListViewController
+    */
+    class func convertToUserListItems(ratingHistory: [Rating]) -> [UserListItem] {
+        var items = [UserListItem]()
+        let defaultFunFactor = FunFactorItem.getDefaultFunFactor()
+        for item in ratingHistory {
+            items.append((user: item.ratedBy!,
+                funFactorItem: defaultFunFactor, // will not be shown
+                rating: item.rating,
+                comment: item.comment))
+        }
+        return items
     }
 }
 
@@ -104,26 +138,25 @@ class UserListTableViewCell: ZeroMarginsCell {
     /**
     Update UI with data
     
-    - parameter data:       the project data
-    - parameter comment:    the comment to show
+    - parameter data:       the data to show
     - parameter showSmile:  true - show smile icon, false - else
     - parameter showRating: true - show rating, false - else
     */
-    func configure(data: User, comment: String, showSmile: Bool, showRating: Bool) {
-        iconView.image = nil
+    func configure(data: UserListItem, showSmile: Bool, showRating: Bool) {
+        iconView.image = UIImage(named: "noProfileIcon")
         iconView.makeRound()
-        UIImage.loadAsync(data.iconUrl) { (image) -> () in
+        UIImage.loadAsync(data.user.iconUrl) { (image) -> () in
             self.iconView.image = image
         }
         
         // Smiley
         smileView.hidden = !showSmile
         if showSmile {
-            smileView.applyFunFactor(data.funFactor, addWhiteBorder: 2)
+            smileView.applyFunFactor(data.funFactorItem.funFactor, addWhiteBorder: 2)
         }
         
-        titleLabel.text = data.fullName
-        commentLabel.text = "\"\(comment)\""
+        titleLabel.text = data.user.fullName
+        commentLabel.text = data.comment.isEmpty ? "" : "\"\(data.comment)\""
         
         ratingLabel.hidden = !showRating
         if showRating {

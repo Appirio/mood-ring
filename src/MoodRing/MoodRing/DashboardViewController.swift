@@ -3,32 +3,21 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 08.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 
-/// the sample projects for Dashboard screen
-let SAMPLE_DASHBOARD_PROJECTS = [
-    Project(id: "0", title: "HEALTHCARE PROJECT ABC", rating: 3.86, avgRating: 5, iconURL: "p1",
-        tintColor: UIColor.raspberry(), funFactor: 3),
-    Project(id: "1", title: "LOREM TECHNOLOGY PROJECT", rating: 4.86, avgRating: 4, iconURL: "p2",
-        tintColor: UIColor.dark(), funFactor: 3),
-    Project(id: "2", title: "ACME FINANCIAL PROJECT #1", rating: 3.86, avgRating: 3.5, iconURL: "p3",
-        tintColor: UIColor.orange(), funFactor: 2),
-    Project(id: "3", title: "ACME FINANCIAL PROJECT #2", rating: 3.86, avgRating: 3.6, iconURL: "p4",
-        tintColor: UIColor.darkBlue(), funFactor: 4),
-    Project(id: "4", title: "ACME FINANCIAL PROJECT #3", rating: 3.6, avgRating: 3.2, iconURL: "p3",
-        tintColor: UIColor.orange(), funFactor: 4),
-    Project(id: "5", title: "ACME FINANCIAL PROJECT #4", rating: 3.8, avgRating: 3.0, iconURL: "p3",
-        tintColor: UIColor.orange(), funFactor: 4),
-]
-
 /**
 * Dashboard screen
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class DashboardViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
@@ -46,12 +35,21 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
     @IBOutlet weak var smileButton: UIButton!
     @IBOutlet var statisticViews: [UILabel]!
     @IBOutlet weak var listView: UIView!
+    @IBOutlet weak var noDataLabel: UILabel!
+    @IBOutlet weak var totalNumberOfProjectsLabel: UILabel!
+    @IBOutlet weak var avgRatingLabel: UILabel!
     
     /// the bottom lines in buttons
     var bottomLines = [UIView]()
     
+    /*
+    Only one of the following arrays is used to show the list of projects.
+    First is used when user has manager role, the second when user is not a manager.
+    */
     /// the projects to show
     var projects: [Project] = []
+    /// the list of ProjectUser that define which projects to show
+    var projectUsers: [ProjectUser] = []
     
     /// flag: true - is manager's dashboard, false - for common user
     var isManager = AuthenticationUtil.sharedInstance.isManager
@@ -63,8 +61,14 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
         }
     }
     
+    /// Project filter: If not nil, the indicates which projects to show. If nil, then show all projects
+    private var projectsStatusToRequest: ProjectStatus? = .Active
+    
     /// the default color for topView
     private var defaultTopViewColor: UIColor!
+    
+    /// the API
+    private var api = MoodRingApi.sharedInstance
     
     /**
     Setup UI
@@ -77,6 +81,8 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
         
         // Top area
         defaultTopViewColor = topView.backgroundColor
+        totalNumberOfProjectsLabel.text = "-"
+        avgRatingLabel.text = "-"
         
         // Buttons
         for b in buttons {
@@ -120,20 +126,68 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     /**
-    Load data. Will be updated in future.
+    Load data from the server and update UI
     */
     func loadData() {
+        if let funFactor = AuthenticationUtil.sharedInstance.getLastFunFactor() {
+            if funFactor.date.isToday() {
+                self.currentFunFactor = funFactor.funFactor
+            }
+        }
         updateFunFactor()
-        // Emulate loading
+        loadTopStatistic()
+        
+        // Load projects
         projects = []
+        projectUsers = []
         tableView.reloadData()
+        noDataLabel.hidden = true
+        
         let loadingIndicator = LoadingView(self.listView, dimming: true)
         loadingIndicator.show()
-        delay(LOADING_EMULATION_DURATION) { () -> () in
-            
-            self.projects = SAMPLE_DASHBOARD_PROJECTS
-            self.tableView.reloadData()
-            loadingIndicator.terminate()
+        if isManager {
+            api.getProjects(status: projectsStatusToRequest, callback: { (projects) -> () in
+                self.projects = projects
+                self.tableView.reloadData()
+                self.checkNoData()
+                loadingIndicator.terminate()
+            }, failure: createGeneralFailureCallback(loadingIndicator))
+        }
+        else {
+            api.getProjectUsers(AuthenticationUtil.sharedInstance.currentUser,
+                status: projectsStatusToRequest,
+                callback: { (projectUsers) -> () in
+                    self.projectUsers = projectUsers
+                    self.tableView.reloadData()
+                    self.checkNoData()
+                    loadingIndicator.terminate()
+            }, failure: createGeneralFailureCallback(loadingIndicator))
+        }
+    }
+    
+    /**
+    Load statistic data for top area
+    */
+    func loadTopStatistic() {
+        api.getUserStatistic(AuthenticationUtil.sharedInstance.currentUser,
+            callback: { (numberOfProjects, avgRating) -> () in
+                self.totalNumberOfProjectsLabel.text = "\(numberOfProjects)"
+                self.avgRatingLabel.text = avgRating.formatRating()
+            }, failure: createGeneralFailureCallback())
+    }
+    
+    /**
+    Check if there are no data and show corrsponding message
+    */
+    func checkNoData() {
+        if projectUsers.isEmpty && projects.isEmpty {
+            if isManager {
+                noDataLabel.text = "MESSAGE_NO_PROJECTS".localized()
+            }
+            else {
+                noDataLabel.text = "MESSAGE_NO_MY_PROJECTS".localized()
+            }
+            noDataLabel.hidden = false
         }
     }
     
@@ -144,6 +198,16 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
     */
     @IBAction func buttonAction(sender: UIButton) {
         highlightButton(sender)
+        
+        // Change project filter
+        switch sender {
+        case button1:
+            projectsStatusToRequest = .Active
+        case button2:
+            projectsStatusToRequest = .Completed
+        default:
+            projectsStatusToRequest = nil
+        }
         loadData()
     }
     
@@ -198,7 +262,10 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
     - returns: number of projects
     */
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return projects.count
+        if isManager {
+            return projects.count
+        }
+        return projectUsers.count
     }
     
     /**
@@ -211,7 +278,14 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
     */
     func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.getCell(indexPath, ofClass: DashboardTableViewCell.self)
-        cell.configure(projects[indexPath.row], isManager: isManager)
+        if isManager {
+            cell.configure(projects[indexPath.row], isManager: isManager)
+        }
+        else {
+            let projectUser = projectUsers[indexPath.row]
+            cell.configure(projectUser.project, isManager: isManager)
+            cell.otherRating.text = projectUser.avgProjectUserRating.formatFullRating()
+        }
         return cell
     }
     
@@ -223,7 +297,14 @@ class DashboardViewController: UIViewController, UITableViewDataSource, UITableV
     */
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         if let vc = create(ProjectDetailsViewController.self) {
-            vc.project = projects[indexPath.row]
+            if isManager {
+                vc.project = projects[indexPath.row]
+            }
+            else {
+                let projectUser = projectUsers[indexPath.row]
+                vc.project = projectUser.project
+                vc.myAverageRating = projectUser.avgProjectUserRating
+            }
             self.navigationController?.pushViewController(vc, animated: true)
         }
         tableView.deselectRowAtIndexPath(indexPath, animated: true)
@@ -276,7 +357,7 @@ class DashboardTableViewCell: ZeroMarginsCell {
         }
         
         projectRating.text = data.rating.formatRating()
-        otherRating.text = data.avgRating.formatRating()
+        otherRating.text = data.avgRating.formatRating() // for non manager this will be replaced with "My Avg" value
         otherRatingTitleLabel.text = isManager ? "AVG_RATING".localized() : "MY_AVG".localized()
         
         funIcon.applyFunFactor(data.funFactor)

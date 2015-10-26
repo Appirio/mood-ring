@@ -3,6 +3,7 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -12,21 +13,15 @@ import UIComponents
 /// the sample comment for current fun factor state
 let SAMPLE_CURRENT_COMMENT = "All projects went well"
 
-/// the sample fun factor items to show onMy Fun Factor screen
-let SAMPLE_FUN_FACTOR_ITEMS = [
-    FunFactorItem(funFactor: 4, comment: SAMPLE_CURRENT_COMMENT, date: NSDate()), // Today
-    FunFactorItem(funFactor: 3, comment: "Feedback goes here", date: NSDate().addDays(-1)), // Yesterday
-    FunFactorItem(funFactor: 1, comment: "Feedback goes here", date: NSDate.parseDate("2014-08-21") ?? NSDate()),
-    FunFactorItem(funFactor: 2, comment: "Feedback goes here", date: NSDate.parseDate("2014-08-20") ?? NSDate()),
-    FunFactorItem(funFactor: 4, comment: "Feedback goes here", date: NSDate.parseDate("2014-08-20") ?? NSDate())
-]
-
-
 /**
 * My Fun Factor screen
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class MyFunFactorViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -38,9 +33,13 @@ class MyFunFactorViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet weak var listView: UIView!
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var barDiagramView: BarDiagram!
+    @IBOutlet weak var noDataLabel: UILabel!
     
     /// the items to show
     var items = [FunFactorItem]()
+    
+    /// the API
+    private var api = MoodRingApi.sharedInstance
     
     /**
     Setup UI
@@ -74,16 +73,39 @@ class MyFunFactorViewController: UIViewController, UITableViewDataSource, UITabl
     Load data and show
     */
     func loadData() {
-        // Emulate loading
+        // Reset UI
+        titleLabel.text = ""
+        noDataLabel.hidden = true
+        barDiagramView.hidden = true
+        
+        // Load fun factor history
         let loadingIndicator = LoadingView(self.listView, dimming: true)
         loadingIndicator.show()
-        delay(LOADING_EMULATION_DURATION) { () -> () in
+        api.getFunFactorHistory(AuthenticationUtil.sharedInstance.currentUser, callback: { (items) -> () in
             
-            self.items = SAMPLE_FUN_FACTOR_ITEMS
+            self.items = items
             self.tableView.reloadData()
+            if items.isEmpty {
+                self.noDataLabel.hidden = false
+                self.noDataLabel.text = "NO_FUN_FACTOR_HISTORY".localized()
+            }
+            
+            // Bar diagram
+            self.barDiagramView.hidden = false
+            var data: [Int] = [0]
+            data.appendContentsOf(items.sort({$0.date.compare($1.date) == .OrderedAscending}).map({$0.funFactor + 1}))
+            data.append(0)
+            self.barDiagramView.data = data
+            
             loadingIndicator.terminate()
-        }
-        updateUI(AuthenticationUtil.sharedInstance.currentUser)
+            
+            // Assign last fun factor to the current user
+            if !items.isEmpty {
+                AuthenticationUtil.sharedInstance.currentUser.funFactor = items[0]
+            }
+            self.updateUI(AuthenticationUtil.sharedInstance.currentUser)
+            
+        }, failure: createGeneralFailureCallback(loadingIndicator))
     }
     
     /**
@@ -94,18 +116,20 @@ class MyFunFactorViewController: UIViewController, UITableViewDataSource, UITabl
     func updateUI(data: User) {
         
         // Top area
-        iconView.image = nil
         UIImage.loadAsync(data.iconUrl) { (image) -> () in
             self.iconView.image = image
         }
         
-        smileView.applyFunFactor(AuthenticationUtil.sharedInstance.currentUser.funFactor,
+        let funFactorItem = AuthenticationUtil.sharedInstance.currentUser.getFunFactorItem()
+        smileView.applyFunFactor(funFactorItem.funFactor,
             addWhiteBorder: 2, addShadow: 2)
-        topView.backgroundColor = UIColor.funFactorColor(AuthenticationUtil.sharedInstance.currentUser.funFactor)
-        titleLabel.text = "\"\(SAMPLE_CURRENT_COMMENT)\""
+        topView.backgroundColor = UIColor.funFactorColor(funFactorItem.funFactor)
+        let comment = funFactorItem.comment
+        if !comment.isEmpty {
+            titleLabel.text = "\"\(comment)\""
+        }
         
         // Update bar diagram
-        barDiagramView.data = Int.generateRandomSampleValuesForBarDiagram()
         barDiagramView.colors = UIColor.funFactorColors()
         
         delay(0.3) { () -> () in
@@ -173,7 +197,7 @@ class MyFunFactorTableViewCell: ZeroMarginsCell {
         
         // Smiley
         smileView.applyFunFactor(funFactorItem.funFactor)
-        commentLabel.text = "\"\(funFactorItem.comment)\""
+        commentLabel.text = funFactorItem.comment.isEmpty ? "" : "\"\(funFactorItem.comment)\""
         dateLabel.text = funFactorItem.date.formatDate().uppercaseString
     }
 }

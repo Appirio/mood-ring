@@ -3,32 +3,28 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 
-/// sample users for the screen
-let SAMPLE_HISTORY_USERS = [
-    User(id: "1", "Jackblack Longnamous", rating: 5, funFactor: 4, iconUrl: "ava0"),
-    User(id: "2", "Jane Snow", rating: 4, funFactor: 3, iconUrl: "ava1"),
-    User(id: "3", "John Scott", rating: 4, funFactor: 3, iconUrl: "ava2"),
-    User(id: "4", "Greg Water", rating: 3, funFactor: 2, iconUrl: "ava3"),
-    User(id: "5", "Tom Jones", rating: 3, funFactor: 3, iconUrl: "ava4")
-]
-
-
 /**
 * History screen
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class HistoryViewController: UIViewController {
     
     /// outlets
     @IBOutlet weak var filterView: UIView!
     @IBOutlet weak var listView: UIView!
+    @IBOutlet weak var noDataLabel: UILabel!
 
     /// the project
     var project: Project!
@@ -36,6 +32,12 @@ class HistoryViewController: UIViewController {
     /// the reference to list view controller
     private var listViewController: UserListViewController?
 
+    /// the API
+    private var api = MoodRingApi.sharedInstance
+    
+    /// current selected date
+    private var currentDate = NSDate()
+    
     /**
     Setup UI
     */
@@ -66,6 +68,7 @@ class HistoryViewController: UIViewController {
         // Filter
         if let vc = create(FilterViewController.self) {
             vc.dateChanged = { (date)->() in
+                self.currentDate = date
                 
                 // Reload user's list
                 self.listViewController?.removeFromParent()
@@ -82,23 +85,32 @@ class HistoryViewController: UIViewController {
     Load the list of users
     */
     func loadUsersList() {
-        // Emulate loading the list of users
-        let listLoadingIndicator = LoadingView(self.listView)
-        listLoadingIndicator.show()
-        delay(LOADING_EMULATION_DURATION) { () -> () in
-            var items = [(User, String)]()
-            for i in 0..<SAMPLE_HISTORY_USERS.count {
-                items.append((SAMPLE_HISTORY_USERS[i],
-                    SAMPLE_COMMENTS[i % SAMPLE_COMMENTS.count])) // first 2 comments like in design
+        noDataLabel.hidden = true
+        
+        // Load data
+        let loadingIndicator = LoadingView(self.listView)
+        loadingIndicator.show()
+        api.getRatingHistory(project, date: self.currentDate, callback: { (ratingHistory) -> () in
+            loadingIndicator.terminate()
+            if !ratingHistory.isEmpty {
+                if let dataForGivenDate = ratingHistory[self.currentDate.beginningOfDay()] {
+                    
+                    if let vc = self.create(UserListViewController.self) {
+                        vc.items = UserListViewController.convertToUserListItems(dataForGivenDate)
+                        vc.showHeader = false
+                        self.listViewController = vc
+                        self.loadViewController(vc, self.listView)
+                    }
+                    return
+                }
+                else {
+                    self.noDataLabel.text = "NO_DATA_FOR_PERIOD".localized()
+                }
             }
-            
-            if let vc = self.create(UserListViewController.self) {
-                vc.items = items
-                vc.showHeader = false
-                self.listViewController = vc
-                self.loadViewController(vc, self.listView)
+            else {
+                self.noDataLabel.text = "NO_DATA_FOR_PROJECT".localized()
             }
-            listLoadingIndicator.terminate()
-        }
+            self.noDataLabel.hidden = false
+            }, failure: createGeneralFailureCallback(loadingIndicator))
     }
 }

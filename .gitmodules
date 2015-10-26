@@ -1,0 +1,3 @@
+[submodule "src/external/SwiftyJSON"]
+	path = src/external/SwiftyJSON
+	url = https://github.com/SwiftyJSON/SwiftyJSON.git

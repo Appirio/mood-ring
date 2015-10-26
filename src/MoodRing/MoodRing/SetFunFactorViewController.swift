@@ -3,6 +3,7 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 09.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -11,8 +12,12 @@ import UIKit
 /**
 * Popuo screen to set Fun Factro
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class SetFunFactorViewController: UIViewController, UITextViewDelegate {
 
@@ -29,6 +34,9 @@ class SetFunFactorViewController: UIViewController, UITextViewDelegate {
     
     /// currently selected smiley
     var selectedIndex: Int?
+    
+    /// the API
+    internal var api = MoodRingApi.sharedInstance
     
     /// the placeholder
     private var placeholder = ""
@@ -72,12 +80,39 @@ class SetFunFactorViewController: UIViewController, UITextViewDelegate {
     */
     func submitAction() {
         if let selectedIndex = selectedIndex {
-            self.delegate?(selectedIndex, textView.text ?? "")
-            cancelAction()
+            var text = self.textView.text ?? ""
+            if text == placeholder {
+                text = ""
+            }
+            let loadingIndicator = LoadingView(self.view, dimming: true)
+            loadingIndicator.show()
+            processSubmission(selectedIndex, comment: text, callback: {
+                self.delegate?(selectedIndex, text)
+                loadingIndicator.terminate()
+                self.cancelAction()
+            }, failure: createGeneralFailureCallback(loadingIndicator))
         }
         else {
             showSubmitError()
         }
+    }
+    
+    /**
+    Send new fun factor to the server
+    
+    - parameter selectedIndex: the selected index
+    - parameter comment:       the related comment
+    - parameter callback:      the callback to invoke after receiving the response
+    - parameter failure:       the callback to invoke when an error occurred
+    */
+    func processSubmission(selectedIndex: Int, comment: String, callback: ()->(), failure: FailureCallback) {
+        api.saveFunFactor(selectedIndex, comment: comment, callback: {
+            
+            // Also save selected fun factor locally
+            let funFactor = FunFactorItem(funFactor: selectedIndex, comment: comment)
+            AuthenticationUtil.sharedInstance.setLastFunFactor(funFactor)
+            callback()
+            }, failure: failure)
     }
     
     /**

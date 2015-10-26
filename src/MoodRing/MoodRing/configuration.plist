@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>isManagerFlag</key>
-	<false/>
+	<true/>
 	<key>salesforceKey</key>
-	<string>3MVG9Rd3qC6oMalVbp2nTI6GofvtEFpnifvUI5VtCjj52CYkbirpRvRUvMav.IE5xZMM2sbnnpARkCdsw9NEu</string>
+	<string>3MVG9Rd3qC6oMalVbp2nTI6GofhKQHE1hxNpBiErSK0QYB3z7en1mQ4ULcyYlTqX6snP_sfw_e.tvl8UKfApu</string>
 	<key>salesforceCallback</key>
 	<string>sfdc://success</string>
 </dict>

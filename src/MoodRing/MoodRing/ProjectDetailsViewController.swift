@@ -3,24 +3,30 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 09.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 import UIComponents
 
-/// the sample comment for a fun factor in projects
-let SAMPLE_FUN_FACTOR_COMMENT = "Everything goes as we planned"
+/// option: true - will enable "Rate" button even if the user already added rating for this person today, false - else
+let OPTION_ENABLE_MULTIPLE_RATINGS_FROM_ONE_PERSON = false
 
 /**
 * Project Details screen
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource, UICollectionViewDelegate {
     
     /// outlets
+    @IBOutlet weak var topView: UIView!
     @IBOutlet weak var iconBg: UIView!
     @IBOutlet weak var iconView: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
@@ -36,26 +42,23 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
     @IBOutlet var funFactorStatistic: [UILabel]!
     @IBOutlet weak var collectionView: UICollectionView!
     @IBOutlet weak var graphView: GraphDiagram!
+    @IBOutlet weak var noDataLabel: UILabel!
+    @IBOutlet weak var noGraphData: UILabel!
     
     /// the project
     var project: Project!
+    
+    /// the current user average rating for this project
+    var myAverageRating: Float?
     
     // flag: true - show UI for manager role, false - for a common user
     var isManager = AuthenticationUtil.sharedInstance.isManager
     
     /// the user's to show
-    private var users: [User] = [
-        User(id: "1", "Jackblack Longnamous", rating: 3.86, funFactor: 4, iconUrl: "ava0"),
-        User(id: "2", "Jane Snow", rating: 4.25, funFactor: 3, iconUrl: "ava1"),
-        User(id: "3", "John Scott", rating: 4.25, funFactor: 4, iconUrl: "ava2"),
-        User(id: "4", "Greg Water", rating: 4.25, funFactor: 2, iconUrl: "ava3"),
-        User(id: "5", "Tom Jones", rating: 4, funFactor: 3, iconUrl: "ava4"),
-        User(id: "6", "John Doe", rating: 2.3, funFactor: 1, iconUrl: "ava5")
-    ]
-    
-    /// the map of the rated users: (userId)->(flag "isRated")
-    private var ratedUsers = [String: Bool]()
+    private var projectUsers: [ProjectUser] = []
 
+    /// the API
+    private var api = MoodRingApi.sharedInstance
     
     /**
     Setup UI
@@ -88,6 +91,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
             stat.text = "0"
         }
         graphView.graphHeightPercent = 0
+        loadData()
     }
     
     /**
@@ -123,6 +127,61 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
     }
 
     /**
+    Load data from the server and update UI
+    */
+    func loadData() {
+        loadRatingHistoryAndUpdateUI()
+        
+        // Reset screen
+        projectUsers = []
+        collectionView.reloadData()
+        for stat in funFactorStatistic {
+            stat.text = "0"
+        }
+        noDataLabel.hidden = true
+        
+        // Load data
+        let loadingIndicator = LoadingView(self.collectionView, dimming: true)
+        loadingIndicator.show()
+        
+        api.getProjectUsersWithCurrentFunFactors(self.project,
+            addRatingDateByUser: !isManager ? AuthenticationUtil.sharedInstance.currentUser : nil,
+            callback: { (projectUsers) -> () in
+                self.projectUsers = projectUsers
+                self.collectionView.reloadData()
+                if projectUsers.isEmpty {
+                    self.noDataLabel.hidden = false
+                    self.noDataLabel.text = "NO_PROJECT_MEMBERS".localized()
+                }
+                if self.isManager {
+                    self.updateFunFactorStatistic()
+                }
+                loadingIndicator.terminate()
+        }, failure: createGeneralFailureCallback(loadingIndicator))
+    }
+    
+    /**
+    Load rating history and update plot graph
+    */
+    func loadRatingHistoryAndUpdateUI() {
+        self.graphView.hidden = true
+        
+        let loadingIndicator = LoadingView(self.topView, dimming: false)
+        loadingIndicator.show()
+        api.getAvgRatingHistory(project, callback: { (ratings) -> () in
+            if ratings.count >= MIN_PLOT_GRAPH_POINTS {
+                self.graphView.hidden = false
+                self.graphView.data = ratings.map({$0.rating})
+            }
+            if self.graphView.hidden {
+                self.noGraphData.hidden = false
+                self.noGraphData.text = self.noGraphData.text?.uppercaseString
+            }
+            loadingIndicator.terminate()
+            }, failure: createGeneralFailureCallback(loadingIndicator))
+    }
+    
+    /**
     Update UI with data
     */
     func updateUI(data: Project) {
@@ -140,7 +199,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
         }
         
         projectRating.text = data.rating.formatRating()
-        otherRating.text = data.avgRating.formatRating()
+        otherRating.text = (isManager ? data.avgRating : (myAverageRating ?? 0)).formatRating()
         otherRatingTitleLabel.text = isManager ? "AVG_RATING".localized() : "MY_AVG".localized()
         
         if !funIcon.hidden {
@@ -150,10 +209,19 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
         // Today stat
         todayStatHeight.constant = isManager ? 77 : 3
         
-        // Update fun factor statistic
+        if isManager {
+            updateFunFactorStatistic()
+        }
+    }
+    
+    /**
+    Update fun factor statistic
+    */
+    func updateFunFactorStatistic() {
         var funFactorStat = [Int:Int]()
-        for user in users {
-            funFactorStat[user.funFactor] = (funFactorStat[user.funFactor] ?? 0) + 1
+        for projectUser in projectUsers {
+            let index = projectUser.user.getFunFactor()
+            funFactorStat[index] = (funFactorStat[index] ?? 0) + 1
         }
         for stat in funFactorStatistic {
             let value = funFactorStat[stat.tag] ?? 0
@@ -164,7 +232,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
             smile.applyFunFactor(smile.tag, addWhiteBorder: 2)
         }
     }
-    
+
     /**
     Open History screen
     */
@@ -199,7 +267,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
     - returns: the number of users
     */
     func collectionView(collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return users.count
+        return projectUsers.count
     }
     
     /**
@@ -214,11 +282,11 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
         cellForItemAtIndexPath indexPath: NSIndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCellWithReuseIdentifier("ProjectDetailsCollectionViewCell",
             forIndexPath: indexPath) as! ProjectDetailsCollectionViewCell
-        let user = users[indexPath.row]
-        cell.configure(user, isManager: isManager, isRated: ratedUsers[user.id] ?? false)
+        let projectUser = projectUsers[indexPath.row]
+        cell.configure(projectUser, isManager: isManager, isRated: projectUser.isRatedByCurrentUser
+            && !OPTION_ENABLE_MULTIPLE_RATINGS_FROM_ONE_PERSON )
         cell.parent = self
         cell.indexPath = indexPath
-        cell.user = user
         return cell
     }
     
@@ -248,10 +316,9 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
     - parameter indexPath:            the indexPath
     */
     func collectionView(collectionView: UICollectionView, didSelectItemAtIndexPath indexPath: NSIndexPath) {
-        let user = users[indexPath.row]
+        let projectUser = projectUsers[indexPath.row]
         if let vc = create(MemberDetailsViewController.self) {
-            vc.userData = user
-            vc.avgRatingOnThisProject = user.rating // this is a rating of the user for current project
+            vc.projectUser = projectUser
             self.navigationController?.pushViewController(vc, animated: true)
         }
         collectionView.deselectItemAtIndexPath(indexPath, animated: true)
@@ -259,15 +326,14 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
     
     /**
     Mark user as reated at given indexPath.
-    Will be modified in future to save the rating into a data source
     
     - parameter rating:    the rating set by current user
     - parameter comment:   the comment
     - parameter indexPath: the indexPath
     */
     func setUserRated(rating: Float, comment: String, atIndexPath indexPath: NSIndexPath) {
-        let user = users[indexPath.row]
-        ratedUsers[user.id] = true
+        let projectUser = projectUsers[indexPath.row]
+        projectUser.isRatedByCurrentUser = true
         collectionView.reloadItemsAtIndexPaths([indexPath])
     }
 }
@@ -294,8 +360,8 @@ class ProjectDetailsCollectionViewCell: UICollectionViewCell {
     /// the indexPath
     var indexPath: NSIndexPath!
     
-    /// the related user
-    var user: User!
+    /// the related project user
+    var projectUser: ProjectUser!
     
     /**
     Update UI with data
@@ -304,18 +370,19 @@ class ProjectDetailsCollectionViewCell: UICollectionViewCell {
     - parameter isManager: true - need to hide "Rate" button, false - else
     - parameter isRated:   true - disable "Rate" button, false - else
     */
-    func configure(data: User, isManager: Bool, isRated: Bool) {
-        iconView.image = nil
+    func configure(data: ProjectUser, isManager: Bool, isRated: Bool) {
+        self.projectUser = data
+        iconView.image = UIImage(named: "noProfileIcon")
         iconView.makeRound()
-        UIImage.loadAsync(data.iconUrl) { (image) -> () in
+        UIImage.loadAsync(data.user.iconUrl) { (image) -> () in
             self.iconView.image = image
         }
         
-        smileView.applyFunFactor(data.funFactor)
+        smileView.applyFunFactor(data.user.getFunFactor())
         funFactorBgView.makeRound()
-        titleLabel.text = data.fullName
-        ratingLabel.text = data.rating.formatRating()
-        rateButton.hidden = isManager
+        titleLabel.text = data.user.fullName
+        ratingLabel.text = data.avgProjectUserRating.formatRating()
+        rateButton.hidden = isManager || data.user.id.hasPrefix(AuthenticationUtil.sharedInstance.currentUser.id)
         rateButton.enabled = !isRated
     }
     
@@ -326,7 +393,7 @@ class ProjectDetailsCollectionViewCell: UICollectionViewCell {
     */
     @IBAction func rateButtonAction(sender: AnyObject) {
         if let vc = parent.create(RateUserViewController.self) {
-            vc.user = user
+            vc.projectUser = projectUser
             vc.delegate = { (index, comment) -> () in
                 let rateValue = Float(index + 1)
                 self.parent.setUserRated(rateValue, comment: comment, atIndexPath: self.indexPath)
@@ -342,8 +409,7 @@ class ProjectDetailsCollectionViewCell: UICollectionViewCell {
     */
     @IBAction func funFactorDetailsAction(sender: AnyObject) {
         if let vc = parent.create(FunFactorDetailsViewController.self) {
-            vc.user = user
-            vc.comment = SAMPLE_FUN_FACTOR_COMMENT
+            vc.user = projectUser.user
             if let root = parent.rootController {
                 root.showViewControllerFromSide(vc, inContainer: root.view, bounds: root.view.bounds, side: .BOTTOM)
             }

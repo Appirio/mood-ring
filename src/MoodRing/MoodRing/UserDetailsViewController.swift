@@ -3,17 +3,25 @@
 //  MoodRing
 //
 //  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 import UIComponents
 
+/// the minimum number of points in plot
+let MIN_PLOT_GRAPH_POINTS = 2
+
 /**
 * User details for Member Details and other screens
 *
-* @author Alexander Volkov
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*/
+/* changes:
+* 1.1:
+* - new parameters - list of FunFactorItems and Ratings
 */
 class UserDetailsViewController: UIViewController {
 
@@ -30,6 +38,7 @@ class UserDetailsViewController: UIViewController {
     @IBOutlet weak var barDiagramView: BarDiagram!
     @IBOutlet weak var detailsLeftMargin: NSLayoutConstraint!
     @IBOutlet weak var graphView: GraphDiagram!
+    @IBOutlet weak var noGraphData: UILabel!
     
     /// the user to show
     var user: User!
@@ -52,6 +61,12 @@ class UserDetailsViewController: UIViewController {
     /// flag: true - will show smiley icon, false - else
     var showSmiley = true
     
+    /// the ratings to show
+    var ratings: [Rating]?
+    
+    /// the fun factors to show
+    var funFactors: [FunFactorItem]?
+    
     /**
     Setup UI
     */
@@ -69,10 +84,30 @@ class UserDetailsViewController: UIViewController {
         }
         allProjectsView.hidden = !showThisProjectView
         
-        self.graphView.graphHeightPercent = 0
+        // Plot graph
+        graphView.graphHeightPercent = 0
+        graphView.hidden = true
+        if let ratings = ratings {
+            if ratings.count >= MIN_PLOT_GRAPH_POINTS {
+                graphView.hidden = false
+                graphView.data = ratings.map({$0.rating})
+            }
+        }
+        if graphView.hidden {
+            noGraphData.hidden = false
+            noGraphData.text = noGraphData.text?.uppercaseString
+        }
         
         // Bar diagram
         barDiagramView.graphBottomMargin = 0
+        barDiagramView.hidden = true
+        if let list = funFactors {
+            barDiagramView.hidden = false
+            var data: [Int] = [0]
+            data.appendContentsOf(list.sort({$0.date.compare($1.date) == .OrderedAscending}).map({$0.funFactor + 1}))
+            data.append(0)
+            barDiagramView.data = data
+        }
         
         updateUI(user)
     }
@@ -107,12 +142,11 @@ class UserDetailsViewController: UIViewController {
     - parameter data: the user's data
     */
     func updateUI(data: User) {
-        iconView.image = nil
         UIImage.loadAsync(data.iconUrl) { (image) -> () in
             self.iconView.image = image
         }
         
-        smileView.applyFunFactor(data.funFactor, addWhiteBorder: 2)
+        smileView.applyFunFactor(data.getFunFactor(), addWhiteBorder: 2)
         titleLabel.text = data.fullName.uppercaseString
         
         thisProjectRating.text = avgRatingOnThisProject.formatFullRating()
@@ -124,7 +158,6 @@ class UserDetailsViewController: UIViewController {
         }
         
         // Update bar diagram
-        barDiagramView.data = Int.generateRandomSampleValuesForBarDiagram()
         barDiagramView.colors = UIColor.funFactorColors()
     }
     

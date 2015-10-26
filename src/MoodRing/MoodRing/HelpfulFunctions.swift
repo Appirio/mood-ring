@@ -2,7 +2,8 @@
 //  HelpfulFunctions.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -14,8 +15,12 @@ A set of helpful functions and extensions
 /**
 * Extends UIColor with color methods from design.
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - new method fromString()
 */
 extension UIColor {
     
@@ -39,6 +44,27 @@ extension UIColor {
     */
     convenience init(gray: CGFloat, a: CGFloat = 1) {
         self.init(r: gray, g: gray, b: gray, a: a)
+    }
+    
+    /**
+    Get UIColor from hex string, e.g. "FF0000" -> red color
+    
+    - parameter hexString: the hex string
+    
+    - returns: the UIColor instance or nil
+    */
+    class func fromString(hexString: String) -> UIColor? {
+        if hexString.length == 6 {
+            let redStr = hexString.substringToIndex(hexString.startIndex.advancedBy(2))
+            let greenStr = hexString.substringWithRange(Range<String.Index>(
+                start: hexString.startIndex.advancedBy(2),
+                end: hexString.startIndex.advancedBy(4)))
+            let blueStr = hexString.substringFromIndex(hexString.startIndex.advancedBy(4))
+            return UIColor(r: CGFloat(redStr.intFromHex()),
+                g: CGFloat(greenStr.intFromHex()),
+                b: CGFloat(blueStr.intFromHex()))
+        }
+        return nil
     }
 
     /**
@@ -130,8 +156,12 @@ extension UIColor {
 /**
 * Extenstion adds helpful methods to String
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - new method intFromHex()
 */
 extension String {
     
@@ -255,6 +285,15 @@ extension String {
         return self.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "",
             options: .RegularExpressionSearch, range: nil)
     }
+
+    /**
+    Get Int value from hex string, e.g. "FF" -> 255
+    
+    - returns: the int value
+    */
+    func intFromHex() -> Int {
+        return Int(UInt8(strtoul(self, nil, 16)))
+    }
 }
 
 /**
@@ -302,7 +341,7 @@ func async(callback: ()->()) {
 /**
 * Extenstion adds helpful methods to Float
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension Float {
@@ -371,13 +410,83 @@ extension Float {
 }
 
 /**
-* Helpfull methods
+* Structure contains common date parsers
 *
 * @author TCASSEMBLER
 * @version 1.0
 */
+struct DateFormatters {
+    
+    /// Full date format
+    static var fullDate: NSDateFormatter = {
+        let f = NSDateFormatter()
+        f.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSZ" // if hours are [0-23]
+        f.locale = NSLocale.currentLocale()
+        return f
+        }()
+    static var fullDateStringLength = 28
+    
+    /// Human readable format
+    static var humanReadable: NSDateFormatter = {
+        let f = NSDateFormatter()
+        f.dateFormat = "MMM dd,yyyy"
+        return f
+        }()
+}
+
+/**
+* Helpfull methods
+*
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - new methods beginningOfDay(), parseFullDate()
+*/
 extension NSDate {
    
+    /**
+    Get NSDate that corresponds to the start of current day.
+    
+    - returns: the date
+    */
+    func beginningOfDay() -> NSDate {
+        let calendar = NSCalendar.currentCalendar()
+        
+        let components = calendar.components([NSCalendarUnit.Month, NSCalendarUnit.Year, NSCalendarUnit.Day],
+            fromDate:self)
+        
+        return calendar.dateFromComponents(components)!
+    }
+    
+    /**
+    Get NSDate that corresponds to the end of current day.
+    
+    - returns: the date
+    */
+    func endOfDay() -> NSDate {
+        var date = nextDayStart()
+        date = date.dateByAddingTimeInterval(-1)
+        return date
+    }
+    
+    /**
+    Get the next day start
+    
+    - returns: the date
+    */
+    func nextDayStart() -> NSDate {
+        let calendar = NSCalendar.currentCalendar()
+        
+        let components = NSDateComponents()
+        components.day = 1
+        
+        let date = calendar.dateByAddingComponents(components, toDate: self.beginningOfDay(),
+            options: NSCalendarOptions(rawValue: 0))!
+        return date
+    }
+    
     /**
     Format date for UI
     
@@ -388,14 +497,7 @@ extension NSDate {
     */
     func formatDate(var dateFormetter: NSDateFormatter? = nil, uppercase: Bool = true) -> String {
         if dateFormetter == nil {
-            struct Static {
-                static var dateFormatter: NSDateFormatter = {
-                    let f = NSDateFormatter()
-                    f.dateFormat = "MMM dd,yyyy"
-                    return f
-                    }()
-            }
-            dateFormetter = Static.dateFormatter
+            dateFormetter = DateFormatters.humanReadable
         }
         if isToday() {
             return "TODAY".localized()
@@ -480,6 +582,18 @@ extension NSDate {
         string = string.substringToIndex(string.startIndex.advancedBy(Static.dateStringLength))
         return Static.dateParser.dateFromString(string)
     }
+    
+    /**
+    Parse full date string, e.g. 2015-10-16T15:56:51.000+0000
+    
+    - parameter string: the date string
+    
+    - returns: date object or nil
+    */
+    class func parseFullDate(var string: String) -> NSDate? {
+        string = string.substringToIndex(string.startIndex.advancedBy(DateFormatters.fullDateStringLength))
+        return DateFormatters.fullDate.dateFromString(string)
+    }
 }
 
 /**
@@ -511,7 +625,7 @@ func isPortraitOrientation() -> Bool {
 /**
 * Extenstion adds helpful methods to Int
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension Int {
@@ -543,5 +657,45 @@ extension Int {
             values.append(0)
         }
         return values
+    }
+}
+
+/**
+* Helpful extenstion for arrays
+*
+* @author TCASSEMBLER
+* @version 1.0
+*/
+extension Array {
+    
+    /**
+    Convert array to hash array
+    
+    - parameter transform: the transformation of an object to a key
+    
+    - returns: a hashmap
+    */
+    func hasmapWithKey<K>(transform: (Element) -> (K)) -> [K:Element] {
+        var hashmap = [K:Element]()
+        
+        for item in self {
+            let key = transform(item)
+            hashmap[key] = item
+        }
+        return hashmap
+    }
+}
+
+/**
+* Helpful extenstion for arrays
+*
+* @author TCASSEMBLER
+* @version 1.0
+*/
+extension Array where Element : Hashable {
+    
+    /// List of unique values in the array
+    var unique: [Element] {
+        return Array(Set(self))
     }
 }

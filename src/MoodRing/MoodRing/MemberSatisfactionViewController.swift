@@ -2,27 +2,23 @@
 //  MemberSatisfactionViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 import UIComponents
 
-/// sample users for the screen
-let SAMPLE_OVERALL_SATISFACTION_USERS = [
-    User(id: "6", "John Doe", rating: 5, funFactor: 4, iconUrl: "ava5"),
-    User(id: "1", "Jackblack Longnamous", rating: 3.86, funFactor: 4, iconUrl: "ava0"),
-    User(id: "2", "Jane Snow", rating: 4, funFactor: 3, iconUrl: "ava1"),
-    User(id: "3", "John Scott", rating: 4, funFactor: 3, iconUrl: "ava2"),
-    User(id: "4", "Greg Water", rating: 3, funFactor: 2, iconUrl: "ava3")
-]
-
 /**
 * Overall Members' Satisfaction screen
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class MemberSatisfactionViewController: UIViewController {
 
@@ -34,6 +30,7 @@ class MemberSatisfactionViewController: UIViewController {
     @IBOutlet weak var filterView: UIView!
     @IBOutlet weak var listView: UIView!
     @IBOutlet weak var barDiagramView: BarDiagram!
+    @IBOutlet weak var noDataLabel: UILabel!
     
     /// the project
     var project: Project!
@@ -43,6 +40,12 @@ class MemberSatisfactionViewController: UIViewController {
     
     /// the reference to list view controller
     private var listViewController: UserListViewController?
+    
+    /// the API
+    private var api = MoodRingApi.sharedInstance
+    
+    /// current selected date
+    private var currentDate = NSDate()
     
     /**
     Setup UI
@@ -102,6 +105,7 @@ class MemberSatisfactionViewController: UIViewController {
         // Filter
         if let vc = create(FilterViewController.self) {
             vc.dateChanged = { (date)->() in
+                self.currentDate = date
                 
                 // Reload user's list
                 self.listViewController?.removeFromParent()
@@ -114,37 +118,71 @@ class MemberSatisfactionViewController: UIViewController {
         loadUsersList()
         
         // Update bar diagram
-        barDiagramView.data = Int.generateRandomSampleValuesForBarDiagram()
+        barDiagramView.hidden = true
+        api.getFunFactorHistory(project, callback: { (data) -> () in
+            self.updateBarDiagram(data)
+            }, failure: createGeneralFailureCallback())
         barDiagramView.colors = UIColor.funFactorColors()
-        
-        delay(0.3) { () -> () in
-            self.barDiagramView.animateBarDiagram()
-        }
     }
     
     /**
     Load the list of users
     */
     func loadUsersList() {
-        // Emulate loading the list of users
+        // Load the list of users
         let listLoadingIndicator = LoadingView(self.listView)
         listLoadingIndicator.show()
-        delay(LOADING_EMULATION_DURATION) { () -> () in
-            var items = [(User, String)]()
-            for i in 0..<SAMPLE_OVERALL_SATISFACTION_USERS.count {
-                items.append((SAMPLE_OVERALL_SATISFACTION_USERS[i],
-                    SAMPLE_COMMENTS[(2 + i) % SAMPLE_COMMENTS.count])) // first 2 comments like in design
+        noDataLabel.hidden = true
+
+        api.getFunFactorHistory(project, date: self.currentDate, callback: { (data) -> () in
+           listLoadingIndicator.terminate()
+
+            if !data.isEmpty {
+                if let dataForGivenDate = data[self.currentDate.beginningOfDay()] {
+                    var items = [UserListItem]()
+                    for item in dataForGivenDate {
+                        items.append((user: item.0, funFactorItem: item.1, rating: 0, comment: item.1.comment))
+                    }
+                    if let vc = self.create(UserListViewController.self) {
+                        vc.items = items
+                        vc.showHeader = false
+                        vc.showSmiley = true
+                        vc.showRating = false
+                        self.listViewController = vc
+                        self.loadViewController(vc, self.listView)
+                    }
+                    return
+                }
+                else {
+                    self.noDataLabel.text = "NO_DATA_FOR_PERIOD".localized()
+                }
             }
-            
-            if let vc = self.create(UserListViewController.self) {
-                vc.items = items
-                vc.showHeader = false
-                vc.showSmiley = true
-                vc.showRating = false
-                self.listViewController = vc
-                self.loadViewController(vc, self.listView)
+            else {
+                self.noDataLabel.text = "NO_DATA_FOR_PROJECT".localized()
             }
-            listLoadingIndicator.terminate()
+            self.noDataLabel.hidden = false
+        }, failure: createGeneralFailureCallback(listLoadingIndicator))
+    }
+    
+    /**
+    Update bar diagram
+    
+    - parameter data: the fun factors
+    */
+    func updateBarDiagram(data: [NSDate: [(User, FunFactorItem)]]) {
+        
+        var funFactors: [FunFactorItem] = []
+        for (_,v) in data {
+            funFactors.appendContentsOf(v.map({$1}))
+        }
+        self.barDiagramView.hidden = false
+        var data: [Int] = [0]
+        data.appendContentsOf(funFactors.sort({$0.date.compare($1.date) == .OrderedAscending}).map({$0.funFactor + 1}))
+        data.append(0)
+        self.barDiagramView.data = data
+        delay(0.3) { () -> () in
+            self.barDiagramView.animateBarDiagram()
         }
     }
+    
 }

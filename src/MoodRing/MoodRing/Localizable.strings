@@ -2,7 +2,8 @@
   Localizable.strings
   MoodRing
 
-  Created by TCASSEMBLER on 09.10.15.
+  Created by Alexander Volkov on 09.10.15.
+  Modified by TCASSEMBLER in 20.10.15.
   Copyright © 2015 Topcoder. All rights reserved.
 */
 
@@ -21,3 +22,16 @@
 "TODAY"="Today";
 "YESTERDAY"="Yesterday";
 "RATE_PREFIX"="Rate";
+
+"Incorrect response from the server"="Incorrect response from the server";
+"Unknown server error"="Unknown server error";
+"MESSAGE_NO_PROJECTS"="There are no projects yet";
+"MESSAGE_NO_USER_PROJECTS"="There are no projects in which the user participates";
+"MESSAGE_NO_MY_PROJECTS"="There are no projects in which you participate";
+"NO_DATA"="No data";
+"NO_FUN_FACTOR_HISTORY"="You have not yet provided data about your mood";
+"NO_PROJECT_MEMBERS"="This project has no members";
+"NO_DATA_FOR_PERIOD"="There is no data for this period";
+"NO_DATA_FOR_USER"="There is no data for this user";
+"NO_DATA_FOR_PROJECT"="There is no data for this project";
+"Please specify correct username and password"="Please specify correct username and password";

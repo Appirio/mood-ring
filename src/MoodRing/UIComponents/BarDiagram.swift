@@ -2,7 +2,7 @@
 //  BarDiagram.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 11.10.15.
+//  Created by Alexander Volkov on 11.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import Foundation
 /**
 * Graph diagram (polyline)
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 @IBDesignable

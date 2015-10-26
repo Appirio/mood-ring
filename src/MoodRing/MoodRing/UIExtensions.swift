@@ -2,7 +2,8 @@
 //  UIExtensions.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 08.10.15.
+//  Created by Alexander Volkov on 08.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -16,7 +17,7 @@ A set of helpful extensions for classes from UIKit
 * Methods for loading and removing a view controller and its views,
 * and shortcut helpful methods for instantiating UIViewController
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -191,7 +192,7 @@ enum TRANSITION {
 /**
 * Methods for custom transitions from the sides
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -280,7 +281,7 @@ extension UIViewController {
 /**
 * Helpful class to set preferred status bar
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class NavigationController: UINavigationController {
@@ -301,7 +302,7 @@ let FONT_PREFIX = "SourceSansPro"
 /**
 * Common fonts used in the app
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 struct Fonts {
@@ -318,7 +319,7 @@ struct Fonts {
 /**
 * Applies default family fonts for UILabels from IB.
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UILabel {
@@ -376,7 +377,7 @@ extension UILabel {
 /**
 * Shortcut methods for UIView
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIView {
@@ -418,7 +419,11 @@ extension UIView {
 * Extension to display alerts
 *
 * :author: TCSASSEMBLER
-* :version: 1.0
+* :version: 1.1
+*
+* changes:
+* 1.1:
+* - new helpful method createGeneralFailureCallback()
 */
 extension UIViewController {
     
@@ -436,12 +441,26 @@ extension UIViewController {
         }))
         self.presentViewController(alert, animated: true, completion: nil)
     }
+    
+    /**
+    Create general failure callback that show alert with error message over the current view controller
+    
+    - parameter loadingView: the loading view parameter
+    
+    - returns: FailureCallback instance
+    */
+    func createGeneralFailureCallback(loadingView: LoadingView? = nil) -> FailureCallback {
+        return { (errorMessage) -> () in
+            self.showAlert("Error".localized(), errorMessage)
+            loadingView?.terminate()
+        }
+    }
 }
 
 /**
 * Extends UIView with shortcut methods
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIView {
@@ -551,7 +570,7 @@ extension UIView {
 /**
 * Shortcut methods for UITableView
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UITableView {
@@ -601,7 +620,7 @@ extension UITableView {
 /**
 * Separator inset fix
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class ZeroMarginsCell: UITableViewCell {
@@ -621,7 +640,7 @@ var CachedImages = [String: (UIImage?, [ImageCallback])]()
 /**
 * Extends UIImage with a shortcut method.
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIImage {
@@ -664,7 +683,7 @@ extension UIImage {
                         return
                     }
                     else {
-                        print("ERROR: Error occured while creating image from the data: \(data)")
+                        print("ERROR: Error occurred while creating image from the data: \(data)")
                     }
                 }
                 // No image - return nil
@@ -703,7 +722,7 @@ extension UIImage {
 /**
 * Extension adds methods that change navigation bar
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -845,7 +864,7 @@ let LOADING_EMULATION_DURATION: NSTimeInterval = 0.5
 /**
 * Class for a general loading view (for api calls).
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class LoadingView: UIView {
@@ -946,7 +965,7 @@ class LoadingView: UIView {
 /**
 * Helpful extensions related to this app
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 extension UIViewController {
@@ -1065,5 +1084,71 @@ extension UIViewController {
     */
     func searchButtonAction() {
         showStub()
+    }
+}
+
+/**
+* Helpful extentions for UITextField
+*
+* @author TCASSEMBLER
+* @version 1.0
+*/
+extension UITextField {
+    
+    /**
+    Placeholder text as the main text
+    
+    - parameter aDecoder: decoder
+    
+    - returns: the instance
+    */
+    public override func awakeAfterUsingCoder(aDecoder: NSCoder) -> AnyObject? {
+        super.awakeAfterUsingCoder(aDecoder)
+        setPlaceholderColor(self.textColor!)
+        return self
+    }
+    
+    /**
+    Set placeholder text color
+    
+    - parameter color: the color
+    */
+    func setPlaceholderColor(color: UIColor) {
+        self.setValue(color, forKeyPath: "_placeholderLabel.textColor")
+    }
+}
+
+/**
+* Extension that replaces standard convertRect
+*
+* @author TCASSEMBLER
+* @version 1.0
+*/
+extension UIView {
+    
+    /**
+    Same as standard convertRect but fixed to provide correct origin coordinates.
+    
+    :param: rect the rect to convert
+    :param: view the reference view there to convert the coordinates to
+    
+    :returns: the coordinates of the given rect in the given view
+    */
+    func convertRectCorrectly(rect: CGRect, toView view: UIView) -> CGRect {
+        if UIScreen.mainScreen().scale == 1 {
+            return self.convertRect(rect, toView: view)
+        }
+        else if self == view {
+            return rect
+        }
+        else {
+            var rectInParent = self.convertRect(rect, toView: self.superview)
+            rectInParent.origin.x /= UIScreen.mainScreen().scale
+            rectInParent.origin.y /= UIScreen.mainScreen().scale
+            let superViewRect = self.superview!.convertRectCorrectly(self.superview!.frame, toView: view)
+            rectInParent.origin.x += superViewRect.origin.x
+            rectInParent.origin.y += superViewRect.origin.y
+            return rectInParent
+        }
     }
 }

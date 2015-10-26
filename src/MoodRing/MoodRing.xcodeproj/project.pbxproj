@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		FD0DADCB1BC94C5C00C5A072 /* UserRatingInProjectViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0DADCA1BC94C5C00C5A072 /* UserRatingInProjectViewController.swift */; };
+		FD2063D11BD306E7002C8009 /* SwiftyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2063D01BD306E7002C8009 /* SwiftyJSON.swift */; };
+		FD2063D61BD30CF8002C8009 /* MoodRingApi.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2063D51BD30CF8002C8009 /* MoodRingApi.swift */; };
+		FD2063D91BD368EA002C8009 /* ProjectUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2063D81BD368EA002C8009 /* ProjectUser.swift */; };
 		FD2BAFB31BC84FA500CD78B5 /* ProjectDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2BAFB21BC84FA500CD78B5 /* ProjectDetailsViewController.swift */; };
 		FD2BAFB71BC8617100CD78B5 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2BAFB61BC8617100CD78B5 /* User.swift */; };
 		FD2BAFBA1BC8768A00CD78B5 /* UserDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2BAFB91BC8768A00CD78B5 /* UserDetailsViewController.swift */; };
@@ -18,8 +21,10 @@
 		FD2BAFC81BC8A7BE00CD78B5 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2BAFC71BC8A7BE00CD78B5 /* HistoryViewController.swift */; };
 		FD2BAFCA1BC8B27000CD78B5 /* MyRatingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD2BAFC91BC8B27000CD78B5 /* MyRatingViewController.swift */; };
 		FD50B5121BCA1F8200613857 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD50B5111BCA1F8200613857 /* SearchViewController.swift */; };
+		FD525F181BD4602700781BE4 /* Rating.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD525F171BD4602700781BE4 /* Rating.swift */; };
 		FD55E27E1BC9FEE9000FC75F /* BarDiagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD55E27D1BC9FEE9000FC75F /* BarDiagram.swift */; };
 		FD55E2801BC9FFCE000FC75F /* Diagram.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD55E27F1BC9FFCE000FC75F /* Diagram.swift */; };
+		FD5C5EB01BD3050C00A22979 /* RestDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD5C5EAF1BD3050C00A22979 /* RestDataSource.swift */; };
 		FD8F565F1BC5EAB00032BAB1 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD8F565E1BC5EAB00032BAB1 /* AppDelegate.swift */; };
 		FD8F56641BC5EAB00032BAB1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FD8F56621BC5EAB00032BAB1 /* Main.storyboard */; };
 		FD8F56661BC5EAB00032BAB1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD8F56651BC5EAB00032BAB1 /* Assets.xcassets */; };
@@ -143,6 +148,9 @@
 
 /* Begin PBXFileReference section */
 		FD0DADCA1BC94C5C00C5A072 /* UserRatingInProjectViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserRatingInProjectViewController.swift; sourceTree = "<group>"; };
+		FD2063D01BD306E7002C8009 /* SwiftyJSON.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SwiftyJSON.swift; path = ../../external/SwiftyJSON/Source/SwiftyJSON.swift; sourceTree = "<group>"; };
+		FD2063D51BD30CF8002C8009 /* MoodRingApi.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MoodRingApi.swift; sourceTree = "<group>"; };
+		FD2063D81BD368EA002C8009 /* ProjectUser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectUser.swift; sourceTree = "<group>"; };
 		FD2BAFB21BC84FA500CD78B5 /* ProjectDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProjectDetailsViewController.swift; sourceTree = "<group>"; };
 		FD2BAFB61BC8617100CD78B5 /* User.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
 		FD2BAFB91BC8768A00CD78B5 /* UserDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDetailsViewController.swift; sourceTree = "<group>"; };
@@ -153,8 +161,10 @@
 		FD2BAFC71BC8A7BE00CD78B5 /* HistoryViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		FD2BAFC91BC8B27000CD78B5 /* MyRatingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyRatingViewController.swift; sourceTree = "<group>"; };
 		FD50B5111BCA1F8200613857 /* SearchViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		FD525F171BD4602700781BE4 /* Rating.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Rating.swift; sourceTree = "<group>"; };
 		FD55E27D1BC9FEE9000FC75F /* BarDiagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BarDiagram.swift; sourceTree = "<group>"; };
 		FD55E27F1BC9FFCE000FC75F /* Diagram.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Diagram.swift; sourceTree = "<group>"; };
+		FD5C5EAF1BD3050C00A22979 /* RestDataSource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RestDataSource.swift; sourceTree = "<group>"; };
 		FD8F565B1BC5EAB00032BAB1 /* Mood Ring.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Mood Ring.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD8F565E1BC5EAB00032BAB1 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FD8F56631BC5EAB00032BAB1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -409,6 +419,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		FD2063CF1BD306A7002C8009 /* 3rd Party */ = {
+			isa = PBXGroup;
+			children = (
+				FD2063D01BD306E7002C8009 /* SwiftyJSON.swift */,
+			);
+			name = "3rd Party";
+			sourceTree = "<group>";
+		};
 		FD2BAFBB1BC8788F00CD78B5 /* Reusable View Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -418,6 +436,15 @@
 				FD2BAFC31BC886F600CD78B5 /* UserListViewController.swift */,
 			);
 			name = "Reusable View Controllers";
+			sourceTree = "<group>";
+		};
+		FD5C5EAE1BD304F900A22979 /* Data Source */ = {
+			isa = PBXGroup;
+			children = (
+				FD5C5EAF1BD3050C00A22979 /* RestDataSource.swift */,
+				FD2063D51BD30CF8002C8009 /* MoodRingApi.swift */,
+			);
+			name = "Data Source";
 			sourceTree = "<group>";
 		};
 		FD8F56521BC5EAB00032BAB1 = {
@@ -448,10 +475,12 @@
 		FD8F565D1BC5EAB00032BAB1 /* MoodRing */ = {
 			isa = PBXGroup;
 			children = (
+				FD5C5EAE1BD304F900A22979 /* Data Source */,
 				FDE935AC1BC7272C00A613CE /* Model */,
 				FDE935811BC6F56100A613CE /* View Controllers */,
 				FDE9359D1BC6F6AC00A613CE /* Utils */,
 				FDE935801BC6F53D00A613CE /* General */,
+				FD2063CF1BD306A7002C8009 /* 3rd Party */,
 			);
 			path = MoodRing;
 			sourceTree = "<group>";
@@ -890,6 +919,8 @@
 				FDE935AD1BC7273400A613CE /* Project.swift */,
 				FD2BAFB61BC8617100CD78B5 /* User.swift */,
 				FDEC023F1BC96EA100C08A3D /* FunFactorItem.swift */,
+				FD2063D81BD368EA002C8009 /* ProjectUser.swift */,
+				FD525F171BD4602700781BE4 /* Rating.swift */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -1141,6 +1172,7 @@
 				FDEC024D1BC9D0DA00C08A3D /* DateFilterViewController.swift in Sources */,
 				FD2BAFC61BC89EA400CD78B5 /* MemberSatisfactionViewController.swift in Sources */,
 				FD2BAFC21BC8826A00CD78B5 /* FilterViewController.swift in Sources */,
+				FD2063D91BD368EA002C8009 /* ProjectUser.swift in Sources */,
 				FDE9359F1BC6F6BB00A613CE /* UIExtensions.swift in Sources */,
 				FDEC024B1BC9BA0C00C08A3D /* FunFactorDetailsViewController.swift in Sources */,
 				FD0DADCB1BC94C5C00C5A072 /* UserRatingInProjectViewController.swift in Sources */,
@@ -1149,6 +1181,7 @@
 				FDE935B91BC74F9000A613CE /* SetFunFactorViewController.swift in Sources */,
 				FD2BAFC41BC886F600CD78B5 /* UserListViewController.swift in Sources */,
 				FDE935AA1BC710BF00A613CE /* DashboardViewController.swift in Sources */,
+				FD525F181BD4602700781BE4 /* Rating.swift in Sources */,
 				FDEC02491BC9ABD800C08A3D /* RateUserViewController.swift in Sources */,
 				FDE935A11BC6F6D700A613CE /* HelpfulFunctions.swift in Sources */,
 				FD2BAFCA1BC8B27000CD78B5 /* MyRatingViewController.swift in Sources */,
@@ -1158,11 +1191,14 @@
 				FDEC02401BC96EA100C08A3D /* FunFactorItem.swift in Sources */,
 				FDEC02421BC9898C00C08A3D /* AuthenticationUtil.swift in Sources */,
 				FDE935AE1BC7273400A613CE /* Project.swift in Sources */,
+				FD5C5EB01BD3050C00A22979 /* RestDataSource.swift in Sources */,
 				FDEC024F1BC9E0EC00C08A3D /* Configuration.swift in Sources */,
 				FD50B5121BCA1F8200613857 /* SearchViewController.swift in Sources */,
+				FD2063D61BD30CF8002C8009 /* MoodRingApi.swift in Sources */,
 				FDE935B71BC73FB900A613CE /* MenuViewController.swift in Sources */,
 				FD2BAFB31BC84FA500CD78B5 /* ProjectDetailsViewController.swift in Sources */,
 				FD2BAFC81BC8A7BE00CD78B5 /* HistoryViewController.swift in Sources */,
+				FD2063D11BD306E7002C8009 /* SwiftyJSON.swift in Sources */,
 				FD2BAFB71BC8617100CD78B5 /* User.swift in Sources */,
 				FDEC023E1BC9685500C08A3D /* MyFunFactorViewController.swift in Sources */,
 			);

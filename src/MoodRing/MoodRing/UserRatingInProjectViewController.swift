@@ -2,26 +2,23 @@
 //  UserRatingInProjectViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 
-/// sample users for the screen
-let SAMPLE_USER_RATING_USERS = [
-    User(id: "1", "Jackblack Longnamous", rating: 5, funFactor: 4, iconUrl: "ava0"),
-    User(id: "2", "Jane Snow", rating: 4, funFactor: 3, iconUrl: "ava1"),
-    User(id: "3", "John Scott", rating: 4, funFactor: 3, iconUrl: "ava2"),
-    User(id: "4", "Greg Water", rating: 3, funFactor: 2, iconUrl: "ava3")
-]
-
 /**
 * User Rating in Project screen (opened from "My Rating" screen).
 * Reuses code in MemberDetailsViewController
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - new parameters in addUserDetailsSection()
 */
 class UserRatingInProjectViewController: MemberDetailsViewController {
     
@@ -32,20 +29,22 @@ class UserRatingInProjectViewController: MemberDetailsViewController {
     */
     override func viewWillAppear(animated: Bool) {
         super.viewWillAppear(animated)
-        self.navigationItem.title = project.title
+        self.navigationItem.title = projectUser.project.title
     }
     
     /**
     Customize and show User Details section
     
-    - parameter userData: the user's data
+    - parameter projectUser: the user's data
+    - parameter ratings:     the list of ratings to show
     */
-    override func addUserDetailsSection(userData: User) {
+    override func addUserDetailsSection(projectUser: ProjectUser, ratings: [Rating], funFactors: [FunFactorItem]) {
         // User Details section
         if let vc = self.create(UserDetailsViewController.self) {
-            vc.user = userData
+            vc.user = projectUser.user
+            vc.ratings = ratings
             vc.avgRatingOnThisProjectLabelText = "AVG_RATING_THIS_PROJECT".localized()
-            vc.avgRatingOnAllProjects = self.avgRatingOnThisProject
+            vc.avgRatingOnAllProjects = projectUser.avgProjectUserRating
             vc.showThisProjectView = false
             vc.showBarDiagram = false
             vc.showSmiley = false
@@ -53,10 +52,4 @@ class UserRatingInProjectViewController: MemberDetailsViewController {
         }
     }
     
-    /**
-    Load a list of users
-    */
-    override func loadUsersList() {
-        loadSampleUsersList(SAMPLE_USER_RATING_USERS)
-    }
 }

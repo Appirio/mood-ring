@@ -2,7 +2,7 @@
 //  MenuViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 09.10.15.
+//  Created by Alexander Volkov on 09.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -12,7 +12,7 @@ import Foundation
 /**
 * Class represents one menu item
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 struct MenuItem {
@@ -68,7 +68,7 @@ let MenuWidth: CGFloat = isIPhone5() ? 300 : 325
 /**
 * Menu view controller
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
@@ -250,7 +250,7 @@ class MenuViewController: UIViewController, UITableViewDataSource, UITableViewDe
 /**
 * Cell for a menu item
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MenuItemTableViewCell: UITableViewCell {

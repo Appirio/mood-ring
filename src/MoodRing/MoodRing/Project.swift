@@ -2,17 +2,29 @@
 //  Project.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 09.10.15.
+//  Created by Alexander Volkov on 09.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import Foundation
 
 /**
+Possible project states
+*/
+enum ProjectStatus: String {
+    case Active = "Active", Completed = "Completed"
+}
+
+/**
 * Model object for Projects
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - status property added
 */
 class Project {
     
@@ -36,6 +48,9 @@ class Project {
     
     /// the project fun factor
     var funFactor: Int = 2
+    
+    /// the status of the project
+    var status: ProjectStatus = .Active
     
     /**
     Instantiate new Project object

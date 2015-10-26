@@ -2,27 +2,22 @@
 //  MyRatingViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 10.10.15.
+//  Created by Alexander Volkov on 10.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
 import UIKit
 
-/// the list of sample projects for "My Rating" screen
-let SAMPLE_PROJECTS_MY_RATING = [
-    Project(id: "0", title: "HEALTHCARE PROJECT ABC", rating: 5, avgRating: 5, iconURL: "p1",
-        tintColor: UIColor.raspberry(), funFactor: 3),
-    Project(id: "1", title: "LOREM TECHNOLOGY PROJECT", rating: 4, avgRating: 4, iconURL: "p2",
-        tintColor: UIColor.dark(), funFactor: 3),
-    Project(id: "2", title: "ACME FINANCIAL PROJECT", rating: 4.5, avgRating: 3.5, iconURL: "p3",
-        tintColor: UIColor.orange(), funFactor: 2)
-]
-
 /**
 * My Rating screen
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - API integration
 */
 class MyRatingViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
@@ -38,15 +33,22 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBOutlet weak var button3: UIButton!
     @IBOutlet weak var listView: UIView!
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var noDataLabel: UILabel!
     
     /// the bottom lines in buttons
     var bottomLines = [UIView]()
     
     /// the projects to show
-    var projects = [Project]()
+    var projects = [ProjectUser]()
     
     /// the selected cell
     var selectedIndex: NSIndexPath?
+    
+    /// Project filter: If not nil, the indicates which projects to show. If nil, then show all projects
+    private var projectsStatusToRequest: ProjectStatus? = .Active
+    
+    /// the API
+    private var api = MoodRingApi.sharedInstance
     
     /**
     Setup UI
@@ -76,21 +78,23 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
     */
     func loadData() {
         
-        // Emulate loading user details
-        let detailsLoadingIndicator = LoadingView(self.topView, dimming: false)
-        detailsLoadingIndicator.show()
-        delay(LOADING_EMULATION_DURATION) { () -> () in
+        // Show user details
+        let loadingIndicator = LoadingView(self.topView, dimming: false)
+        loadingIndicator.show()
+        api.getAvgRatingHistory(AuthenticationUtil.sharedInstance.currentUser, callback: { (ratings) -> () in
             // User details
             if let vc = self.create(UserDetailsViewController.self) {
                 vc.user = AuthenticationUtil.sharedInstance.currentUser
-                vc.avgRatingOnAllProjects = AuthenticationUtil.sharedInstance.currentUser.rating
+                vc.ratings = ratings
+                
+                vc.avgRatingOnAllProjects = AuthenticationUtil.sharedInstance.currentUser.avgAllProjectsRating
                 vc.showThisProjectView = false
                 vc.showBarDiagram = false
                 vc.showSmiley = false
                 self.loadViewController(vc, self.topView)
             }
-            detailsLoadingIndicator.terminate()
-        }
+            loadingIndicator.terminate()
+            }, failure: createGeneralFailureCallback(loadingIndicator))
         
         loadProjects()
     }
@@ -101,16 +105,21 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
     func loadProjects() {
         self.projects = []
         self.tableView.reloadData()
+        self.noDataLabel.hidden = true
         
         // Emulate project loading
-        let projectsLoadingIndicator = LoadingView(self.listView, dimming: true)
-        projectsLoadingIndicator.show()
-        delay(LOADING_EMULATION_DURATION) { () -> () in
-            
-            self.projects = SAMPLE_PROJECTS_MY_RATING
+        let loadingIndicator = LoadingView(self.listView, dimming: true)
+        loadingIndicator.show()
+        api.getProjectUsers(AuthenticationUtil.sharedInstance.currentUser,
+            status: projectsStatusToRequest, callback: { (projects) -> () in
+            self.projects = projects
             self.tableView.reloadData()
-            projectsLoadingIndicator.terminate()
-        }
+            if projects.isEmpty {
+                self.noDataLabel.hidden = false
+                self.noDataLabel.text = "MESSAGE_NO_MY_PROJECTS".localized()
+            }
+            loadingIndicator.terminate()
+            }, failure: createGeneralFailureCallback(loadingIndicator))
     }
     
     /**
@@ -121,6 +130,17 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
     @IBAction func buttonAction(sender: UIButton) {
         highlightButton(sender)
         selectedIndex = nil
+        
+        // Change project filter
+        switch sender {
+        case button1:
+            projectsStatusToRequest = .Active
+        case button2:
+            projectsStatusToRequest = .Completed
+        default:
+            projectsStatusToRequest = nil
+        }
+
         loadProjects()
     }
     
@@ -191,9 +211,10 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
     - parameter indexPath: the indexPath
     */
     func openProjectDetails(indexPath: NSIndexPath) {
-        let project = projects[indexPath.row]
+        let projectUser = projects[indexPath.row]
         if let vc = create(ProjectDetailsViewController.self) {
-            vc.project = project
+            vc.project = projectUser.project
+            vc.myAverageRating = projectUser.avgProjectUserRating
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
@@ -204,11 +225,9 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
     - parameter indexPath: the indexPath
     */
     func openUserRatingForIndexPath(indexPath: NSIndexPath) {
-        let project = projects[indexPath.row]
+        let projectUser = projects[indexPath.row]
         if let vc = create(UserRatingInProjectViewController.self) {
-            vc.userData = AuthenticationUtil.sharedInstance.currentUser
-            vc.project = project
-            vc.avgRatingOnThisProject = project.rating
+            vc.projectUser = projectUser
             self.navigationController?.pushViewController(vc, animated: true)
         }
     }
@@ -244,7 +263,7 @@ class MyRatingViewController: UIViewController, UITableViewDataSource, UITableVi
 /**
 * Cell for the My Rating project list
 *
-* @author TCASSEMBLER
+* @author Alexander Volkov
 * @version 1.0
 */
 class MyRatingTableViewCell: ZeroMarginsCell {
@@ -276,18 +295,19 @@ class MyRatingTableViewCell: ZeroMarginsCell {
     - parameter data:      the project data
     - parameter indexPath: the indexPath
     */
-    func configure(data: Project, indexPath: NSIndexPath) {
+    func configure(data: ProjectUser, indexPath: NSIndexPath) {
         self.indexPath = indexPath
-        titleLabel.text = data.title
+        titleLabel.text = data.project.title
         
         // project icon
         iconView.image = UIImage(named: "defaultProjectIcon")
-        iconBg.backgroundColor = data.tintColor
-        UIImage.loadAsync(data.iconURL) { (image) -> () in
+        iconBg.backgroundColor = data.project.tintColor
+        UIImage.loadAsync(data.project.iconURL) { (image) -> () in
             self.iconView.image = image
         }
         
-        projectRating.text = data.rating.formatRating()
+        // Average Rating for current user in given project
+        projectRating.text = data.avgProjectUserRating.formatRating()
     }
     
     /**

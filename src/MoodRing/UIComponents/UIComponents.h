@@ -2,7 +2,7 @@
 //  UIComponents.h
 //  UIComponents
 //
-//  Created by TCASSEMBLER on 11.10.15.
+//  Created by Alexander Volkov on 11.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 

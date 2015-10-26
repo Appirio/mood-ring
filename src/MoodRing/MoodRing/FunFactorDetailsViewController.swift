@@ -2,7 +2,8 @@
 //  FunFactorDetailsViewController.swift
 //  MoodRing
 //
-//  Created by TCASSEMBLER on 11.10.15.
+//  Created by Alexander Volkov on 11.10.15.
+//  Modified by TCASSEMBLER in 20.10.15.
 //  Copyright © 2015 Topcoder. All rights reserved.
 //
 
@@ -11,8 +12,12 @@ import UIKit
 /**
 * Fun Factor details popup
 *
-* @author TCASSEMBLER
-* @version 1.0
+* @author Alexander Volkov, TCASSEMBLER
+* @version 1.1
+*
+* changes:
+* 1.1:
+* - support for changes in model objects (User, FunFactorItem)
 */
 class FunFactorDetailsViewController: UIViewController {
 
@@ -26,9 +31,6 @@ class FunFactorDetailsViewController: UIViewController {
     /// the related user
     var user: User!
     
-    /// the comment
-    var comment: String = ""
-    
     /**
     Setup UI
     */
@@ -36,7 +38,7 @@ class FunFactorDetailsViewController: UIViewController {
         super.viewDidLoad()
         iconView.makeRound()
         fadingView.backgroundColor = UIColor.clearColor()
-        updateUI(user, comment: comment)
+        updateUI(user, comment: user.getFunFactorItem().comment)
     }
     
     /**
@@ -58,14 +60,15 @@ class FunFactorDetailsViewController: UIViewController {
     - parameter comment: the comment
     */
     func updateUI(data: User, comment: String) {
-        iconView.image = nil
+        iconView.image = UIImage(named: "noProfileIcon")
         UIImage.loadAsync(data.iconUrl) { (image) -> () in
             self.iconView.image = image
         }
         
-        bgView.backgroundColor = UIColor.funFactorColor(data.funFactor)
-        smileView.applyFunFactor(data.funFactor, addWhiteBorder: 3)
-        titleLabel.text = "\"\(comment)\""
+        let funFactorIndex = data.getFunFactor()
+        bgView.backgroundColor = UIColor.funFactorColor(funFactorIndex)
+        smileView.applyFunFactor(funFactorIndex, addWhiteBorder: 3)
+        titleLabel.text = comment.isEmpty ? "" : "\"\(comment)\""
     }
     
     /**

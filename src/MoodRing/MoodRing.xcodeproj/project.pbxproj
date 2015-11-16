@@ -1441,6 +1441,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.topcoder.MoodRing;
 				PRODUCT_NAME = "Mood Ring";
 				SWIFT_OBJC_BRIDGING_HEADER = "MoodRing/MoodRing-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Release;
 		};

@@ -23,7 +23,7 @@ For more information refer to Salesforce iOS SDK documentation.
 Also you will need to follow the DG from 2nd challenge to setup unmanaged package and add some users, projects, etc. to fill the app screens with data.
 As you see it’s better to use provided credentials. If you will have problems with them, for example a verification code will be required, then please ask a question in the forum.
 
-### Bowerman deployment Notes
+### Bowerman deployment Notes (11/16/2015)
 1.  In order to build I needed to set SWIFT_OPTIMIZATION_LEVEL to none in order to compile.
 2. The SwiftyJSON in external git repo so to add this you need to do the following in the root dir
 ```

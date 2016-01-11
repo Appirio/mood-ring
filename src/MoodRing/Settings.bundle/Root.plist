@@ -50,7 +50,7 @@
 				<string>CUSTOM</string>
 			</array>
 		</dict>
-			<dict>
+		<dict>
 			<key>Type</key>
 			<string>PSTextFieldSpecifier</string>
 			<key>Title</key>
@@ -60,7 +60,6 @@
 			<key>KeyboardType</key>
 			<string>URL</string>
 		</dict>
-	
 		<dict>
 			<key>Type</key>
 			<string>PSGroupSpecifier</string>

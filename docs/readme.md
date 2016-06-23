@@ -27,6 +27,6 @@ As you see it’s better to use provided credentials. If you will have problems 
 1.  In order to build I needed to set SWIFT_OPTIMIZATION_LEVEL to none in order to compile.
 2. The SwiftyJSON in external git repo so to add this you need to do the following in the root dir
 ```
-git submodules init
+git submodule init
 git submodule update
 ```

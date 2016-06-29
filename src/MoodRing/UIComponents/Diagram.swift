@@ -127,7 +127,7 @@ public class Diagram: UIView {
     public func animateFromLine() {
         stopAnimation()
         self.animationTimer = NSTimer.scheduledTimerWithTimeInterval(DIAGRAM_ANIMATION_INTERVAL,
-            target: self, selector: Selector("animateDiagram"), userInfo: nil, repeats: true)
+            target: self, selector: #selector(Diagram.animateDiagram), userInfo: nil, repeats: true)
     }
     
     /**

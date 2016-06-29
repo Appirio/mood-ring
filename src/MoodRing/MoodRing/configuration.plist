@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>isManagerFlag</key>
-	<true/>
+	<false/>
 	<key>salesforceKey</key>
 	<string>3MVG9Rd3qC6oMalVbp2nTI6GofhKQHE1hxNpBiErSK0QYB3z7en1mQ4ULcyYlTqX6snP_sfw_e.tvl8UKfApu</string>
 	<key>salesforceCallback</key>

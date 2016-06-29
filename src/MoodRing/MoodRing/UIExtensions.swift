@@ -581,10 +581,10 @@ extension UITableView {
     */
     func separatorInsetAndMarginsToZero() {
         let tableView = self
-        if tableView.respondsToSelector("setSeparatorInset:") {
+        if tableView.respondsToSelector(Selector("setSeparatorInset:")) {
             tableView.separatorInset = UIEdgeInsetsZero
         }
-        if tableView.respondsToSelector("setLayoutMargins:") {
+        if tableView.respondsToSelector(Selector("setLayoutMargins:")) {
             tableView.layoutMargins = UIEdgeInsetsZero
         }
         
@@ -818,7 +818,7 @@ extension UIViewController {
         let customBarButtonView = UIView(frame: CGRectMake(0, 0, 40, 30))
         // Button
         let button = UIButton()
-        button.addTarget(self, action: "backButtonAction", forControlEvents: UIControlEvents.TouchUpInside)
+        button.addTarget(self, action: #selector(UIViewController.backButtonAction), forControlEvents: UIControlEvents.TouchUpInside)
         button.frame = CGRectMake(-17, 0, 57, 30) // position like in design
         
         // Button icon
@@ -1020,7 +1020,7 @@ extension UIViewController {
     */
     func addMenuButton() {
         self.navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(named: "iconMenu"),
-            style: .Plain, target: self, action: "showLeftSideMenuAction")
+            style: .Plain, target: self, action: #selector(UIViewController.showLeftSideMenuAction))
     }
     
     /**
@@ -1037,7 +1037,7 @@ extension UIViewController {
     */
     func createSearchItem() -> UIBarButtonItem {
         return UIBarButtonItem(image: UIImage(named: "iconSearch"),
-            style: .Plain, target: self, action: "searchButtonAction")
+            style: .Plain, target: self, action: #selector(UIViewController.searchButtonAction))
     }
     
     /**

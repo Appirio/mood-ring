@@ -47,8 +47,8 @@ class SetFunFactorViewController: UIViewController, UITextViewDelegate {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupNavigationBar()
-        addLeftButton("Cancel".localized(), selector: "cancelAction")
-        addRightButton("Submit".localized(), selector: "submitAction")
+        addLeftButton("Cancel".localized(), selector: #selector(SetFunFactorViewController.cancelAction))
+        addRightButton("Submit".localized(), selector: #selector(SetFunFactorViewController.submitAction))
         topView.addBottomBorder(color: UIColor(r: 221, g: 221, b: 221))
         
         // placeholder

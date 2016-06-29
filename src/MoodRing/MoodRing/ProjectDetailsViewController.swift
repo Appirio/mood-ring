@@ -68,7 +68,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
         setupNavigationBar()
         addBackButton()
         if !isManager {
-            addRightButton(iconName: "iconHistory", selector: "openHistory")
+            addRightButton(iconName: "iconHistory", selector: #selector(ProjectDetailsViewController.openHistory))
         }
         todayStat.addBottomBorder(height: 3, color: UIColor.separatorColor())
         
@@ -305,7 +305,7 @@ class ProjectDetailsViewController: UIViewController, UICollectionViewDataSource
         let n: CGFloat = isPortraitOrientation() ? 2 : 3
         let gapWidth: CGFloat = 1
         let width: CGFloat = (screenWidth - gapWidth * (n - 1)) / n
-        let height: CGFloat = isManager ? 150 : 195
+        let height: CGFloat = /*isManager ? 150 :*/ 195
         return CGSizeMake(width, height)
     }
     
@@ -382,7 +382,7 @@ class ProjectDetailsCollectionViewCell: UICollectionViewCell {
         funFactorBgView.makeRound()
         titleLabel.text = data.user.fullName
         ratingLabel.text = data.avgProjectUserRating.formatRating()
-        rateButton.hidden = isManager || data.user.id.hasPrefix(AuthenticationUtil.sharedInstance.currentUser.id)
+        rateButton.hidden = /*isManager ||*/ data.user.id.hasPrefix(AuthenticationUtil.sharedInstance.currentUser.id)
         rateButton.enabled = !isRated
     }
     

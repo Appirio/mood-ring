@@ -186,9 +186,9 @@ class LoginViewController: UIViewController, SFAuthenticationManagerDelegate, UI
         super.viewWillAppear(animated)
         
         // Listen for keyboard events
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillShow:",
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillShow(_:)),
             name: UIKeyboardWillShowNotification, object: nil)
-        NSNotificationCenter.defaultCenter().addObserver(self, selector: "keyboardWillHide:",
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(LoginViewController.keyboardWillHide(_:)),
             name: UIKeyboardWillHideNotification, object: nil)
     }
     
